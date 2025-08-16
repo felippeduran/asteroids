@@ -18,9 +18,9 @@ public struct GameState
 [Serializable]
 public struct PlayerState
 {
-    public int Score { get; set; }
-    public int Lives { get; set; }
-    public bool Reviving { get; set; }
-    public float ReviveCooldown { get; set; }
+    public int Score;
+    public int Lives;
+    public bool Reviving;
+    public float ReviveCooldown;
     public readonly bool GameOver => Lives <= 0;
 }
