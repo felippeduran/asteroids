@@ -1,0 +1,17 @@
+{
+    "name": "Gameplay.UI.Runtime",
+    "rootNamespace": "Gameplay.UI.Runtime",
+    "references": [
+        "Gameplay.Simulation.Runtime",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

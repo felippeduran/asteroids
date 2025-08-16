@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Asteroids
+    uniqueID: 764704373
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
