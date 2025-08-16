@@ -63,10 +63,9 @@ namespace Gameplay.Simulation.Runtime
 
             if (input.Fire)
             {
-                // TODO: Fire a bullet
                 fireBulletData = new FireBulletData[]{
                     new FireBulletData{
-                        Position = ship.Position,
+                        Position = ship.BulletSpawnPosition,
                         Forward = ship.Forward,
                         IsPlayerBullet = true
                     }
@@ -75,7 +74,7 @@ namespace Gameplay.Simulation.Runtime
 
             if (input.Teleport)
             {
-                // TODO: Teleport the ship to a random position
+                // TODO: Add a teleport delay
                 var random = new Random();
                 ship.Position = new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
             }

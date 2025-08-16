@@ -68,12 +68,15 @@ namespace Gameplay.Simulation.Runtime
                         var random = new Random();
                         var hit = raycasHits[random.Range(0, count)];
                         var targetPosition = hit.rigidbody.transform.position;
-                        var direction = (new Vector2(targetPosition.x, targetPosition.y) - saucer.Position).normalized;
+
+                        var fireAnchorPosition = saucer.ShootRing.Position;
+                        var direction = (new Vector2(targetPosition.x, targetPosition.y) - fireAnchorPosition).normalized;
 
                         var finalDirection = random.GetRandomDirectionFromCone(direction, saucerConfig.Aim.FireAngle);
+                        var startPosition = fireAnchorPosition + finalDirection * saucer.ShootRing.Radius;
                         bulletsFired.Add(new FireBulletData
                         {
-                            Position = saucer.Position,
+                            Position = startPosition,
                             Forward = finalDirection,
                             IsPlayerBullet = false
                         });

@@ -1,29 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable))]
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
 public class Bullet : MonoBehaviour, IPoolable
 {
     [SerializeField] new Rigidbody2D rigidbody;
     [SerializeField] new Collider2D collider;
     [SerializeField] ScoreWorth scoreWorth;
     [SerializeField] Destroyable destroyable;
+    [SerializeField] Team team;
 
     public Vector2 Position { get => transform.position; set => transform.position = value; }
     public Vector2 LinearVelocity { get => rigidbody.linearVelocity; set => rigidbody.linearVelocity = value; }
     public bool IsDestroyed { get => destroyable.IsDestroyed; set => destroyable.IsDestroyed = value; }
     public int Score { get; set; }
     public float TotalTraveledDistance { get; set; }
-    public bool IsPlayerBullet
-    {
-        get => gameObject.layer == LayerMask.NameToLayer("Player");
-        set
-        {
-            var layer = value ? LayerMask.NameToLayer("Player") : LayerMask.NameToLayer("Enemies");
-            gameObject.layer = layer;
-            collider.gameObject.layer = layer;
-        }
-    }
+    public bool IsPlayerBullet { get => team.IsTeamPlayer; set => team.IsTeamPlayer = value; }
 
     public void Disable()
     {
@@ -45,8 +37,8 @@ public class Bullet : MonoBehaviour, IPoolable
         if (other.attachedRigidbody.TryGetComponent<ScoreWorth>(out var scoreWorth))
         {
             Score += scoreWorth.Amount;
-            IsDestroyed = true;
         }
+        IsDestroyed = true;
     }
 
     void OnValidate()
@@ -64,6 +56,11 @@ public class Bullet : MonoBehaviour, IPoolable
         if (scoreWorth == null)
         {
             scoreWorth = GetComponent<ScoreWorth>();
+        }
+
+        if (team == null)
+        {
+            team = GetComponent<Team>();
         }
     }
 }

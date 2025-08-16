@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 1531724108109302878}
   - component: {fileID: -5944803166371631463}
   - component: {fileID: 1245189824471065487}
+  - component: {fileID: 285788081410176955}
   m_Layer: 8
   m_Name: Saucer
   m_TagString: Untagged
@@ -232,6 +233,14 @@ MonoBehaviour:
   type: 0
   rigidbody: {fileID: 1245189824471065487}
   destroyable: {fileID: 1531724108109302878}
+  team: {fileID: 285788081410176955}
+  shootRings:
+  - Type: 0
+    Radius: 1.14
+    Center: {fileID: 496004466798674757}
+  - Type: 1
+    Radius: 1.87
+    Center: {fileID: 5253445070622958850}
 --- !u!114 &1531724108109302878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +298,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &285788081410176955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2825173865788963799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4e7b0435896422b8a8b18085569d37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3100477835569794707
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7092497107966104631
 Transform:
   m_ObjectHideFlags: 0
@@ -320,6 +341,7 @@ Transform:
   m_Children:
   - {fileID: 1790851950559637386}
   - {fileID: 3909936034525170439}
+  - {fileID: 5253445070622958850}
   m_Father: {fileID: 5673236148728166539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3120954157746185417
@@ -710,6 +732,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.53, y: 0.94}
   m_EdgeRadius: 0
+--- !u!1 &4938349480404489873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 496004466798674757}
+  m_Layer: 8
+  m_Name: ShootCenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &496004466798674757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4938349480404489873}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5608186624872978488}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5139584637325509336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,6 +1226,7 @@ Transform:
   m_Children:
   - {fileID: 2689384327537623177}
   - {fileID: 7784330812944982144}
+  - {fileID: 496004466798674757}
   m_Father: {fileID: 5673236148728166539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7006925015775324804
@@ -1253,6 +1307,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!1 &7023367947429916284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5253445070622958850}
+  m_Layer: 8
+  m_Name: ShootCenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5253445070622958850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7023367947429916284}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.18, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7092497107966104631}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7453741542290713857
 GameObject:
   m_ObjectHideFlags: 0

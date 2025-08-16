@@ -19,6 +19,7 @@ namespace Gameplay.Simulation.Runtime
             var playerShip = GameObject.Instantiate<Ship>(assets.ShipPrefab);
             playerShip.Setup(gameConfig.Ship);
             playerShip.Position = new Vector2(0, 0);
+            playerShip.IsTeamPlayer = true;
             playerShip.IsDestroyed = false;
             playerShip.Enable();
 
