@@ -13,9 +13,9 @@ public class Bullet : MonoBehaviour, IPoolable
     public Vector2 Position { get => transform.position; set => transform.position = value; }
     public Vector2 LinearVelocity { get => rigidbody.linearVelocity; set => rigidbody.linearVelocity = value; }
     public bool IsDestroyed { get => destroyable.IsDestroyed; set => destroyable.IsDestroyed = value; }
+    public bool IsPlayerBullet { get => team.IsTeamPlayer; set => team.IsTeamPlayer = value; }
     public int Score { get; set; }
     public float TotalTraveledDistance { get; set; }
-    public bool IsPlayerBullet { get => team.IsTeamPlayer; set => team.IsTeamPlayer = value; }
 
     public void Disable()
     {
