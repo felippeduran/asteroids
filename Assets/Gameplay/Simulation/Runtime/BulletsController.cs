@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace Gameplay.Simulation.Runtime
 {
+    public struct FireBulletData
+    {
+        public Vector2 Position;
+        public Vector2 Forward;
+        public bool IsPlayerBullet;
+    }
+
     public class BulletsController
     {
         readonly ObjectPool<Bullet> bulletsPool;

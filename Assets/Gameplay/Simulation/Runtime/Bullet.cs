@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour, IPoolable
 {
     [SerializeField] new Rigidbody2D rigidbody;
+    [SerializeField] new Collider2D collider;
     [SerializeField] ScoreWorth scoreWorth;
     [SerializeField] Destroyable destroyable;
 
@@ -12,8 +13,17 @@ public class Bullet : MonoBehaviour, IPoolable
     public Vector2 LinearVelocity { get => rigidbody.linearVelocity; set => rigidbody.linearVelocity = value; }
     public bool IsDestroyed { get => destroyable.IsDestroyed; set => destroyable.IsDestroyed = value; }
     public int Score { get; set; }
-    public bool IsPlayerBullet { get => gameObject.layer == LayerMask.NameToLayer("Player"); set => gameObject.layer = value ? LayerMask.NameToLayer("Player") : LayerMask.NameToLayer("Enemies"); }
     public float TotalTraveledDistance { get; set; }
+    public bool IsPlayerBullet
+    {
+        get => gameObject.layer == LayerMask.NameToLayer("Player");
+        set
+        {
+            var layer = value ? LayerMask.NameToLayer("Player") : LayerMask.NameToLayer("Enemies");
+            gameObject.layer = layer;
+            collider.gameObject.layer = layer;
+        }
+    }
 
     public void Disable()
     {

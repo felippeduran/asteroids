@@ -12,6 +12,7 @@ public class Saucer : MonoBehaviour, IPoolable
     public bool IsDestroyed { get => destroyable.IsDestroyed; set => destroyable.IsDestroyed = value; }
     public Vector2 LinearVelocity { get => rigidbody.linearVelocity; set => rigidbody.linearVelocity = value; }
     public float TurnCooldown { get; set; }
+    public float ShootCooldown { get; set; }
 
     public void Disable()
     {

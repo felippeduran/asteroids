@@ -12,13 +12,6 @@ namespace Gameplay.Simulation.Runtime
         public bool Teleport;
     }
 
-    public struct FireBulletData
-    {
-        public Vector2 Position;
-        public Vector2 Forward;
-        public bool IsPlayerBullet;
-    }
-
     public class ShipController
     {
         public ShipController(){ }

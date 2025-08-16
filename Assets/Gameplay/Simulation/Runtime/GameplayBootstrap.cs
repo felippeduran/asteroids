@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
+using System.Linq;
 
 public struct GameSystems
 {
@@ -34,10 +35,11 @@ public class GameplayBootstrap : MonoBehaviour
         var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
 
         var bulletsFired = gameSystems.ShipController.UpdateShip(gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
+        var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState, gameConfig.Saucers, worldBounds);
+        bulletsFired = bulletsFired.Concat(moreBulletsFired).ToArray();
+        gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState, gameState.Bullets, gameConfig);
 
         gameSystems.AsteroidsController.UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
-        gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState, gameState.Bullets, gameConfig);
-        gameSystems.SaucersController.UpdateSaucers(ref gameState, gameConfig.Saucers, worldBounds);
         gameSystems.WorldLoopController.LoopObjectsThroughWorld(ref gameState, worldBounds);
 
 

@@ -114,17 +114,9 @@ namespace Gameplay.Simulation.Runtime
         Vector2 GetRandomVelocityFromCone(Vector2 linearVelocity, float angle, FloatRange speedRange)
         {
             var random = new Random();
-            var randomDirection = GetRandomDirectionFromCone(linearVelocity, angle);
+            var randomDirection = random.GetRandomDirectionFromCone(linearVelocity, angle);
             var randomSpeed = random.Range(speedRange.Min, speedRange.Max);
             return randomSpeed * randomDirection;
-        }
-
-        Vector2 GetRandomDirectionFromCone(Vector2 linearVelocity, float angle)
-        {
-            var random = new Random();
-            var randomAngle = random.Range(-angle / 2, angle / 2);
-            var randomDirection = Quaternion.Euler(0, 0, randomAngle) * linearVelocity.normalized;
-            return randomDirection;
         }
 
         Asteroid SpawnAsteroid(Vector2 position, Vector2 velocity, AsteroidScoreConfig asteroidConfig)

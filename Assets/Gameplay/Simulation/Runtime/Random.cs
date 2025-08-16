@@ -14,6 +14,11 @@ public class Random
         return NextFloat() * (max - min) + min;
     }
 
+    public int Range(int min, int max)
+    {
+        return random.Next(min, max);
+    }
+
     public float NextFloat()
     {
         return (float)random.NextDouble();
@@ -27,5 +32,13 @@ public class Random
     public Vector2 InsideUnitCircle()
     {
         return NextFloat() * NextDirection();
+    }
+
+    public Vector2 GetRandomDirectionFromCone(Vector2 linearVelocity, float angle)
+    {
+        var random = new Random();
+        var randomAngle = random.Range(-angle / 2, angle / 2);
+        var randomDirection = Quaternion.Euler(0, 0, randomAngle) * linearVelocity.normalized;
+        return randomDirection;
     }
 }

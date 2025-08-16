@@ -88,6 +88,7 @@ public struct SaucerAimConfig
 {
     public float FireRate;
     public float FireAngle;
+    public float SightDistance;
 }
 
 [Serializable]
