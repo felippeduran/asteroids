@@ -11,7 +11,7 @@ namespace Gameplay.Simulation.Runtime
             this.inputProvider = inputProvider;
         }
 
-        public FireBulletData[] UpdateShip(IShip ship, ref PlayerState playerState, GameConfig gameConfig, Bounds worldBounds)
+        public FireBulletData[] UpdateShip(float deltaTime, IShip ship, ref PlayerState playerState, GameConfig gameConfig, Bounds worldBounds)
         {
             ship.AngularVelocity = 0;
 
@@ -21,7 +21,7 @@ namespace Gameplay.Simulation.Runtime
                 bulletsFired = HandleShipInput(inputProvider.GetPlayerInput(), ship, worldBounds, gameConfig.Ship);
             }
 
-            HandleDestroyedShip(Time.deltaTime, ship, ref playerState, gameConfig);
+            HandleDestroyedShip(deltaTime, ship, ref playerState, gameConfig);
             return bulletsFired;
         }
 
@@ -77,6 +77,19 @@ namespace Gameplay.Simulation.Runtime
 
         void HandleDestroyedShip(float deltaTime, IShip ship, ref PlayerState playerState, GameConfig gameConfig)
         {
+            if (playerState.Reviving)
+            {
+                playerState.ReviveCooldown -= deltaTime;
+
+                if (playerState.ReviveCooldown < 0f)
+                {
+                    Debug.Log("Revive!");
+                    // TODO: Watch out for the ship being destroyed again while reviving
+                    playerState.Reviving = false;
+                    ReviveShip(ship);
+                }
+            }
+            
             if (ship.IsDestroyed)
             {
                 ship.Disable();
@@ -93,24 +106,12 @@ namespace Gameplay.Simulation.Runtime
                     }
                 }
             }
-
-            if (playerState.Reviving)
-            {
-                playerState.ReviveCooldown -= deltaTime;
-
-                if (playerState.ReviveCooldown < 0f)
-                {
-                    Debug.Log("Revive!");
-                    // TODO: Watch out for the ship being destroyed again while reviving
-                    playerState.Reviving = false;
-                    ReviveShip(ship);
-                }
-            }
         }
         
         void ReviveShip(IShip ship)
         {
             ship.Position = new Vector2(0, 0);
+            ship.Forward = Vector2.up;
             ship.IsDestroyed = false;
             ship.Enable();
         }

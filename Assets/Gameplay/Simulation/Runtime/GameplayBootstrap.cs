@@ -34,7 +34,7 @@ public class GameplayBootstrap : MonoBehaviour
     {
         var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
 
-        var bulletsFired = gameSystems.ShipController.UpdateShip(gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
+        var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
         var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState, gameConfig.Saucers, worldBounds);
         bulletsFired = bulletsFired.Concat(moreBulletsFired).ToArray();
         gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState, gameState.Bullets, gameConfig);

@@ -18,17 +18,17 @@ namespace Gameplay.Simulation.Runtime
 
         public FireBulletData[] UpdateSaucers(float deltaTime, ref GameState gameState, SaucersConfig saucersConfig, Bounds worldBounds)
         {
-            HandleSaucerSpawning(ref gameState, gameState.Saucers, saucersConfig, worldBounds);
-            HandleSaucerMovement(gameState.Saucers, saucersConfig);
-            var firedBullets = HandleSaucerShooting(Time.deltaTime, gameState.Saucers, saucersConfig);
+            HandleSaucerSpawning(deltaTime, ref gameState, gameState.Saucers, saucersConfig, worldBounds);
+            HandleSaucerMovement(deltaTime, gameState.Saucers, saucersConfig);
+            var firedBullets = HandleSaucerShooting(deltaTime, gameState.Saucers, saucersConfig);
             HandleSaucerBoundaryCrossing(gameState.Saucers, worldBounds);
             HandleDestroyedSaucers(gameState.Saucers);
             return firedBullets;
         }
 
-        void HandleSaucerSpawning(ref GameState gameState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
+        void HandleSaucerSpawning(float deltaTime, ref GameState gameState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
         {
-            gameState.SaucerSpawnCooldown -= Time.deltaTime;
+            gameState.SaucerSpawnCooldown -= deltaTime;
             if (gameState.SaucerSpawnCooldown < 0f)
             {
                 Debug.Log("Try spawning saucers");
@@ -86,11 +86,11 @@ namespace Gameplay.Simulation.Runtime
             return bulletsFired.ToArray();
         }
 
-        void HandleSaucerMovement(List<Saucer> existingSaucers, SaucersConfig saucersConfig)
+        void HandleSaucerMovement(float deltaTime, List<Saucer> existingSaucers, SaucersConfig saucersConfig)
         {
             foreach (var saucer in existingSaucers)
             {
-                saucer.TurnCooldown -= Time.deltaTime;
+                saucer.TurnCooldown -= deltaTime;
                 if (saucer.TurnCooldown < 0f)
                 {
                     Debug.Log($"Try turn {saucer.Type} saucer");
