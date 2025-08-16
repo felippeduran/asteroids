@@ -43,13 +43,18 @@ namespace Gameplay.Simulation.Runtime
 
         var cameras = GameObject.Instantiate<CameraGroup>(assets.Cameras);
 
-        var shipController = new ShipController();
-        var bulletsController = new BulletsController(bulletsPool);
-        var saucersController = new SaucersController(saucersPool);
+        var gameSystems = new GameSystems
+        {
+            ShipController = new ShipController(),
+            BulletsController = new BulletsController(bulletsPool),
+            SaucersController = new SaucersController(saucersPool),
+            AsteroidsController = new AsteroidsController(asteroidsPool),
+            WorldLoopController = new WorldLoopController()
+        };
 
         var gameLoopObject = new GameObject("GameLoop");
         var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
-        bootstrap.Setup(gameState, gameConfig, cameras, asteroidsPool, bulletsPool, saucersPool, shipController, bulletsController, saucersController);
+        bootstrap.Setup(gameState, gameConfig, cameras, gameSystems);
 
             return bootstrap;
         }
