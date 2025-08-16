@@ -16,8 +16,9 @@ public class GameplayBootstrap : MonoBehaviour
     ObjectPool<Bullet> bulletsPool;
     ObjectPool<Saucer> saucersPool;
     ShipController shipController;
+    BulletsController bulletsController;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool, ShipController shipController)
+    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool, ShipController shipController, BulletsController bulletsController)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
@@ -26,6 +27,7 @@ public class GameplayBootstrap : MonoBehaviour
         this.bulletsPool = bulletsPool;
         this.saucersPool = saucersPool;
         this.shipController = shipController;
+        this.bulletsController = bulletsController;
     }
 
     void Update()
@@ -35,7 +37,7 @@ public class GameplayBootstrap : MonoBehaviour
         var bulletsFired = shipController.UpdateShip(gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
 
         UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
-        UpdateBullets(Time.deltaTime, bulletsFired, gameState.Bullets, gameConfig);
+        bulletsController.UpdateBullets(Time.deltaTime, bulletsFired, gameState.Bullets, gameConfig);
         UpdateSaucers(gameConfig.Saucers, ref gameState, worldBounds);
 
         LoopObjectsThroughWorld(worldBounds, gameState);
@@ -155,42 +157,7 @@ public class GameplayBootstrap : MonoBehaviour
         return saucer;
     }
 
-    void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, List<Bullet> bullets, GameConfig gameConfig)
-    {
-        foreach (var bulletFired in bulletsFired)
-        {
-            SpawnBullet(bulletFired.Position, bulletFired.Forward, gameConfig);
-        }
 
-        foreach (var bullet in bullets)
-        {
-            if (!bullet.IsDestroyed)
-            {
-                bullet.TotalTraveledDistance += bullet.LinearVelocity.magnitude * deltaTime;
-                if (bullet.TotalTraveledDistance > gameConfig.BulletTravelDistance)
-                {
-                    bullet.IsDestroyed = true;
-                }
-            }
-        }
-
-        HandleDestroyedBullets(gameState);
-    }
-
-    Bullet SpawnBullet(Vector2 position, Vector2 forward, GameConfig gameConfig)
-    {
-        Bullet bullet = bulletsPool.Get();
-
-        bullet.IsDestroyed = false;
-        bullet.Position = position;
-        bullet.LinearVelocity = gameConfig.BulletSpeed * forward;
-        bullet.TotalTraveledDistance = 0f;
-        bullet.Score = 0;
-        gameState.Bullets.Add(bullet);
-        Debug.Log($"Spawned bullet at {bullet.Position} with velocity {bullet.LinearVelocity}, forward {forward}");
-
-        return bullet;
-    }
 
     void HandleDestroyedAsteroids(GameState gameState)
     {
@@ -277,24 +244,7 @@ public class GameplayBootstrap : MonoBehaviour
         return newAsteroid;
     }
 
-    void HandleDestroyedBullets(GameState gameState)
-    {
-        List<Bullet> bulletsToRemove = new();
-        foreach (var bullet in gameState.Bullets)
-        {
-            if (bullet.IsDestroyed)
-            {
-                gameState.Player.Score += bullet.Score;
-                bulletsToRemove.Add(bullet);
-            }
-        }
 
-        foreach (var bullet in bulletsToRemove)
-        {
-            bulletsPool.Add(bullet);
-            gameState.Bullets.Remove(bullet);
-        }
-    }
 
     void LoopObjectsThroughWorld(Bounds worldBounds, GameState gameState)
     {
