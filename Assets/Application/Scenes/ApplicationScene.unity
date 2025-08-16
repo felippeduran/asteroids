@@ -202,16 +202,18 @@ MonoBehaviour:
           TurnChance: 0.8
           TurnCooldown: 1
         Aim:
-          FireRate: 0
+          FireRate: 1
           FireAngle: 20
+          SightDistance: 20
       - Type: 1
         Movement:
           Speed: 5
           TurnChance: 0.5
           TurnCooldown: 3
         Aim:
-          FireRate: 0
+          FireRate: 0.5
           FireAngle: 360
+          SightDistance: 20
       SpawnConfigs:
       - Type: 0
         Chance: 0.2
