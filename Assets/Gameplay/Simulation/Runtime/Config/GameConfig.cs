@@ -47,6 +47,13 @@ public struct AsteroidScoreConfig
 }
 
 [Serializable]
+public struct ShipConfig
+{
+    public float ThrustForce;
+    public float TurnSpeed;
+}
+
+[Serializable]
 public struct SaucerScoreConfig
 {
     public SaucerType Type;

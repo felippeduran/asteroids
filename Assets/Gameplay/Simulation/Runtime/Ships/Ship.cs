@@ -2,29 +2,21 @@ using System;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-public interface IShip
+public interface IShip : IPoolable
 {
     Vector2 Position { get; set; }
     Vector2 Forward { get; set; }
-
-    void Setup(ShipConfig config);
-    void Reset();
-    void TurnLeft();
-    void TurnRight();
-    void Thrust();
-}
-
-[Serializable]
-public struct ShipConfig
-{
-    public float ThrustForce;
-    public float TurnSpeed;
+    bool IsDestroyed { get; set; }
+    bool IsTeamPlayer { get; set; }
+    Vector2 ThrustForce { get; set; }
+    float AngularVelocity { get; set; }
+    bool IsThrusting { get; }
+    Vector2 BulletSpawnPosition { get; }
 }
 
 [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
 public class Ship : MonoBehaviour, IShip, IPoolable
 {
-    [SerializeField] ShipConfig config;
     [SerializeField] new Rigidbody2D rigidbody;
     [SerializeField] Destroyable destroyable;
     [SerializeField] Team team;
@@ -34,14 +26,11 @@ public class Ship : MonoBehaviour, IShip, IPoolable
     public Vector2 Forward { get => transform.up; set => transform.up = value; }
     public bool IsDestroyed { get => destroyable.IsDestroyed; set => destroyable.IsDestroyed = value; }
     public bool IsTeamPlayer { get => team.IsTeamPlayer; set => team.IsTeamPlayer = value; }
+    public Vector2 ThrustForce { get => rigidbody.totalForce; set => rigidbody.totalForce = value; }
+    public float AngularVelocity { get => rigidbody.angularVelocity; set => rigidbody.angularVelocity = value; }
 
     public bool IsThrusting { get => rigidbody.totalForce.magnitude > Mathf.Epsilon; }
     public Vector2 BulletSpawnPosition { get => bulletSpawnPoint.position; }
-
-    public void Setup(ShipConfig config)
-    {
-        this.config = config;
-    }
 
     public void Disable()
     {
@@ -51,26 +40,6 @@ public class Ship : MonoBehaviour, IShip, IPoolable
     public void Enable()
     {
         gameObject.SetActive(true);
-    }
-
-    public void Reset()
-    {
-        rigidbody.angularVelocity = 0;
-    }
-
-    public void TurnLeft()
-    {
-        rigidbody.angularVelocity = config.TurnSpeed;
-    }
-
-    public void TurnRight()
-    {
-        rigidbody.angularVelocity = -config.TurnSpeed;
-    }
-
-    public void Thrust()
-    {
-        rigidbody.AddForce(transform.up * config.ThrustForce);
     }
 
     void OnTriggerEnter2D(Collider2D other)

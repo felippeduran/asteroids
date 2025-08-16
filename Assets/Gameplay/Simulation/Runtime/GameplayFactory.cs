@@ -14,10 +14,9 @@ namespace Gameplay.Simulation.Runtime
             this.gameConfig = gameConfig;
         }
 
-        public GameplayBootstrap Create()
+        public GameplayBootstrap Create(IInputProvider inputProvider)
         {
             var playerShip = GameObject.Instantiate<Ship>(assets.ShipPrefab);
-            playerShip.Setup(gameConfig.Ship);
             playerShip.Position = new Vector2(0, 0);
             playerShip.IsTeamPlayer = true;
             playerShip.IsDestroyed = false;
@@ -46,7 +45,7 @@ namespace Gameplay.Simulation.Runtime
 
         var gameSystems = new GameSystems
         {
-            ShipController = new ShipController(),
+            ShipController = new ShipController(inputProvider),
             BulletsController = new BulletsController(bulletsPool),
             SaucersController = new SaucersController(saucersPool),
             AsteroidsController = new AsteroidsController(asteroidsPool),

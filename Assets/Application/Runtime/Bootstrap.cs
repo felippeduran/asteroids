@@ -1,5 +1,6 @@
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
+using Gameplay.UI;
 
 namespace Application.Runtime
 {
@@ -10,7 +11,8 @@ namespace Application.Runtime
 
         void Start()
         {
-            GameplayBootstrap gameplay = new GameplayFactory(gameplayAssets, gameConfig).Create();
+            var inputProvider = new KeyboardInputProvider();
+            GameplayBootstrap gameplay = new GameplayFactory(gameplayAssets, gameConfig).Create(inputProvider);
         }
     }
 }

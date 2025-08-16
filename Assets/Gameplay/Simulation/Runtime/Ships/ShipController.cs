@@ -1,88 +1,81 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public struct PlayerInput
-    {
-        public bool TurnLeft;
-        public bool TurnRight;
-        public bool Thrust;
-        public bool Fire;
-        public bool Teleport;
-    }
-
     public class ShipController
     {
-        public ShipController(){ }
+        readonly IInputProvider inputProvider;
 
-        public FireBulletData[] UpdateShip(Ship ship, ref PlayerState playerState, GameConfig gameConfig, Bounds worldBounds)
+        public ShipController(IInputProvider inputProvider)
         {
-            ship.Reset();
+            this.inputProvider = inputProvider;
+        }
+
+        public FireBulletData[] UpdateShip(IShip ship, ref PlayerState playerState, GameConfig gameConfig, Bounds worldBounds)
+        {
+            ship.AngularVelocity = 0;
 
             var bulletsFired = new FireBulletData[] { };
             if (!playerState.GameOver && !playerState.Reviving)
             {
-                bulletsFired = HandleShipInput(GetPlayerInput(), ship, worldBounds);
+                bulletsFired = HandleShipInput(inputProvider.GetPlayerInput(), ship, worldBounds, gameConfig.Ship);
             }
 
             HandleDestroyedShip(Time.deltaTime, ship, ref playerState, gameConfig);
             return bulletsFired;
         }
 
-        PlayerInput GetPlayerInput()
-        {
-            return new PlayerInput
-            {
-                TurnLeft = Input.GetKey(KeyCode.A),
-                TurnRight = Input.GetKey(KeyCode.D),
-                Thrust = Input.GetKey(KeyCode.W),
-                Fire = Input.GetKeyDown(KeyCode.Space),
-                Teleport = Input.GetKeyDown(KeyCode.M)
-            };
-        }
-
-        FireBulletData[] HandleShipInput(PlayerInput input, Ship ship, Bounds worldBounds)
+        FireBulletData[] HandleShipInput(PlayerInput input, IShip ship, Bounds worldBounds, ShipConfig shipConfig)
         {
             var fireBulletData = new FireBulletData[] { };
 
             if (input.TurnLeft)
             {
-                ship.TurnLeft();
+                ship.AngularVelocity = shipConfig.TurnSpeed;
             }
 
             if (input.TurnRight)
             {
-                ship.TurnRight();
+                ship.AngularVelocity = -shipConfig.TurnSpeed;
             }
 
             if (input.Thrust)
             {
-                ship.Thrust();
+                ship.ThrustForce = shipConfig.ThrustForce * ship.Forward;
             }
 
             if (input.Fire)
             {
-                fireBulletData = new FireBulletData[]{
-                    new FireBulletData{
-                        Position = ship.BulletSpawnPosition,
-                        Forward = ship.Forward,
-                        IsPlayerBullet = true
-                    }
-                };
+                fireBulletData = new FireBulletData[] { CreateFireBulletData(ship) };
             }
 
             if (input.Teleport)
             {
                 // TODO: Add a teleport delay
-                var random = new Random();
-                ship.Position = new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
+                ship.Position = GetRandomPositionInsideBounds(worldBounds);
             }
 
             return fireBulletData;
         }
 
-        void HandleDestroyedShip(float deltaTime, Ship ship, ref PlayerState playerState, GameConfig gameConfig)
+        Vector2 GetRandomPositionInsideBounds(Bounds worldBounds)
+        {
+            var random = new Random();
+            return new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
+        }
+
+
+        FireBulletData CreateFireBulletData(IShip ship)
+        {
+            return new FireBulletData
+            {
+                Position = ship.BulletSpawnPosition,
+                Forward = ship.Forward,
+                IsPlayerBullet = true
+            };
+        }
+
+        void HandleDestroyedShip(float deltaTime, IShip ship, ref PlayerState playerState, GameConfig gameConfig)
         {
             if (ship.IsDestroyed)
             {
@@ -110,11 +103,16 @@ namespace Gameplay.Simulation.Runtime
                     Debug.Log("Revive!");
                     // TODO: Watch out for the ship being destroyed again while reviving
                     playerState.Reviving = false;
-                    ship.Position = new Vector2(0, 0);
-                    ship.IsDestroyed = false;
-                    ship.Enable();
+                    ReviveShip(ship);
                 }
             }
+        }
+        
+        void ReviveShip(IShip ship)
+        {
+            ship.Position = new Vector2(0, 0);
+            ship.IsDestroyed = false;
+            ship.Enable();
         }
     }
 }
