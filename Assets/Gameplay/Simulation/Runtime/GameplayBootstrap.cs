@@ -29,18 +29,13 @@ public class GameplayBootstrap : MonoBehaviour
     {
         var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
 
-        ResetShip(gameState.PlayerShip);
-        UpdateShip(gameState.PlayerShip, worldBounds);
-        UpdateWave(Time.deltaTime, ref gameState, gameConfig, worldBounds);
+        UpdateShip(gameState.PlayerShip, ref gameState.Player, worldBounds);
+        UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
         UpdateBullets(Time.deltaTime, gameConfig, gameState.Bullets);
         UpdateSaucers(gameConfig.Saucers, ref gameState, worldBounds);
 
         LoopObjectsThroughWorld(worldBounds, gameState);
 
-        HandleDestroyedAsteroids(gameState);
-        HandleDestroyedBullets(gameState);
-        HandleDestroyedShip(Time.deltaTime, ref gameState, gameConfig);
-        HandleDestroyedSaucers(gameState);
 
         OnUpdate(gameState);
     }
@@ -54,46 +49,43 @@ public class GameplayBootstrap : MonoBehaviour
         }
     }
 
-    void ResetShip(IShip ship)
+    void UpdateShip(Ship ship, ref PlayerState playerState, Bounds worldBounds)
     {
         ship.Reset();
-    }
 
-    void UpdateShip(IShip ship, Bounds worldBounds)
-    {
-        if (gameState.GameOver || gameState.Reviving)
+        if (!playerState.GameOver && !playerState.Reviving)
         {
-            return;
+            if (Input.GetKey(KeyCode.A))
+            {
+                ship.TurnLeft();
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                ship.TurnRight();
+            }
+
+            if (Input.GetKey(KeyCode.W))
+            {
+                ship.Thrust();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // TODO: Fire a bullet
+                var bullet = SpawnBullet(ship.Position, ship.Forward, gameConfig);
+                bullet.IsPlayerBullet = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                // TODO: Teleport the ship to a random position
+                var random = new Random();
+                ship.Position = new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
+            }
         }
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            ship.TurnLeft();
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            ship.TurnRight();
-        }
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            ship.Thrust();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // TODO: Fire a bullet
-            var bullet = SpawnBullet(gameState.PlayerShip.Position, gameState.PlayerShip.Forward, gameConfig);
-            bullet.IsPlayerBullet = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            // TODO: Teleport the ship to a random position
-            var random = new Random();
-            gameState.PlayerShip.Position = new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
-        }
+        HandleDestroyedShip(Time.deltaTime, ship, ref playerState, gameConfig);
     }
 
     void UpdateSaucers(SaucersConfig saucersConfig, ref GameState gameState, Bounds worldBounds)
@@ -157,6 +149,8 @@ public class GameplayBootstrap : MonoBehaviour
             saucersPool.Add(saucer);
             gameState.Saucers.Remove(saucer);
         }
+
+        HandleDestroyedSaucers(gameState);
     }
 
     void HandleDestroyedSaucers(GameState gameState)
@@ -222,39 +216,41 @@ public class GameplayBootstrap : MonoBehaviour
                 }
             }
         }
+
+        HandleDestroyedBullets(gameState);
     }
 
-    void HandleDestroyedShip(float deltaTime, ref GameState gameState, GameConfig gameConfig)
+    void HandleDestroyedShip(float deltaTime, Ship ship, ref PlayerState playerState, GameConfig gameConfig)
     {
-        if (gameState.PlayerShip.IsDestroyed)
+        if (ship.IsDestroyed)
         {
-            gameState.PlayerShip.Disable();
+            ship.Disable();
 
-            if (!gameState.Reviving && !gameState.GameOver)
+            if (!playerState.Reviving && !playerState.GameOver)
             {
                 Debug.Log("Ship destroyed");
-                gameState.Lives--;
-                if (gameState.Lives > 0)
+                playerState.Lives--;
+                if (playerState.Lives > 0)
                 {
                     Debug.Log("Reviving ship");
-                    gameState.Reviving = true;
-                    gameState.ReviveCooldown = gameConfig.ReviveCooldown;
+                    playerState.Reviving = true;
+                    playerState.ReviveCooldown = gameConfig.ReviveCooldown;
                 }
             }
         }
 
-        if (gameState.Reviving)
+        if (playerState.Reviving)
         {
-            gameState.ReviveCooldown -= deltaTime;
+            playerState.ReviveCooldown -= deltaTime;
 
-            if (gameState.ReviveCooldown < 0f)
+            if (playerState.ReviveCooldown < 0f)
             {
                 Debug.Log("Revive!");
                 // TODO: Watch out for the ship being destroyed again while reviving
-                gameState.Reviving = false;
-                gameState.PlayerShip.Position = new Vector2(0, 0);
-                gameState.PlayerShip.IsDestroyed = false;
-                gameState.PlayerShip.Enable();
+                playerState.Reviving = false;
+                ship.Position = new Vector2(0, 0);
+                ship.IsDestroyed = false;
+                ship.Enable();
             }
         }
     }
@@ -351,7 +347,7 @@ public class GameplayBootstrap : MonoBehaviour
         {
             if (bullet.IsDestroyed)
             {
-                gameState.Score += bullet.Score;
+                gameState.Player.Score += bullet.Score;
                 bulletsToRemove.Add(bullet);
             }
         }
@@ -383,7 +379,7 @@ public class GameplayBootstrap : MonoBehaviour
         gameState.PlayerShip.Position = GetLoopedPosition(gameState.PlayerShip.Position, worldBounds);
     }
 
-    void UpdateWave(float deltaTime, ref GameState gameState, GameConfig gameConfig, Bounds worldBounds)
+    void UpdateAsteroids(float deltaTime, ref GameState gameState, GameConfig gameConfig, Bounds worldBounds)
     {
         if (gameState.NextWave)
         {
@@ -413,6 +409,8 @@ public class GameplayBootstrap : MonoBehaviour
             gameState.NextWave = true;
             gameState.NextWaveCooldown = gameConfig.NextWaveCooldown;
         }
+
+        HandleDestroyedAsteroids(gameState);
     }
 
     Vector2 GetRandomAsteroidSpawnVelocity(FloatRange speedRange)

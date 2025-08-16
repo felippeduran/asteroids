@@ -24,9 +24,12 @@ namespace Gameplay.Simulation.Runtime
 
             var gameState = new GameState
             {
-                Lives = gameConfig.InitialLives,
-                Score = 0,
                 Wave = 0,
+                Player = new PlayerState
+                {
+                    Score = 0,
+                    Lives = gameConfig.InitialLives,
+                },
                 PlayerShip = playerShip,
                 Asteroids = new HashSet<Asteroid>(),
                 Saucers = new List<Saucer>(),
