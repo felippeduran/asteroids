@@ -32,12 +32,11 @@ namespace Gameplay.Simulation.Runtime
                     var numberOfAsteroids = gameConfig.InitialAsteroids + (gameState.Wave - 1) * gameConfig.ExtraAsteroidsPerWave;
                     for (int i = 0; i < numberOfAsteroids; i++)
                     {
-                        Asteroid asteroid = asteroidsPool.Get();
+                        var spawnPosition = GetRandomAsteroidSpawnPosition(gameState.PlayerShip.Position, gameConfig.SpawnRange, worldBounds);
+                        var spawnVelocity = GetRandomAsteroidSpawnVelocity(gameConfig.AsteroidSpeedRange);
 
-                        asteroid.Type = AsteroidType.Large;
-                        asteroid.ScoreWorth = gameConfig.Scoring.Asteroids.GetScoreFor(AsteroidType.Large);
-                        asteroid.Position = GetRandomAsteroidSpawnPosition(gameState.PlayerShip.Position, gameConfig.SpawnRange, worldBounds);
-                        asteroid.LinearVelocity = GetRandomAsteroidSpawnVelocity(gameConfig.AsteroidSpeedRange);
+                        var scoreConfig = gameConfig.Scoring.Asteroids.GetScoreConfigFor(AsteroidType.Large);
+                        var asteroid = SpawnAsteroid(spawnPosition, spawnVelocity, scoreConfig);
                         gameState.Asteroids.Add(asteroid);
                     }
                 }
