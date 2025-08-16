@@ -17,8 +17,9 @@ public class GameplayBootstrap : MonoBehaviour
     ObjectPool<Saucer> saucersPool;
     ShipController shipController;
     BulletsController bulletsController;
+    SaucersController saucersController;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool, ShipController shipController, BulletsController bulletsController)
+    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool, ShipController shipController, BulletsController bulletsController, SaucersController saucersController)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
@@ -28,6 +29,7 @@ public class GameplayBootstrap : MonoBehaviour
         this.saucersPool = saucersPool;
         this.shipController = shipController;
         this.bulletsController = bulletsController;
+        this.saucersController = saucersController;
     }
 
     void Update()
@@ -37,8 +39,8 @@ public class GameplayBootstrap : MonoBehaviour
         var bulletsFired = shipController.UpdateShip(gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
 
         UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
-        bulletsController.UpdateBullets(Time.deltaTime, bulletsFired, gameState.Bullets, gameConfig);
-        UpdateSaucers(gameConfig.Saucers, ref gameState, worldBounds);
+        bulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState, gameState.Bullets, gameConfig);
+        saucersController.UpdateSaucers(ref gameState, gameConfig.Saucers, worldBounds);
 
         LoopObjectsThroughWorld(worldBounds, gameState);
 
@@ -57,105 +59,9 @@ public class GameplayBootstrap : MonoBehaviour
 
 
 
-    void UpdateSaucers(SaucersConfig saucersConfig, ref GameState gameState, Bounds worldBounds)
-    {
-        var random = new Random();
 
-        gameState.SaucerSpawnCooldown -= Time.deltaTime;
-        if (gameState.SaucerSpawnCooldown < 0f)
-        {
-            Debug.Log("Try spawning saucers");
-            gameState.SaucerSpawnCooldown = saucersConfig.SpawnCooldown;
-            foreach (var spawnRate in saucersConfig.SpawnConfigs)
-            {
-                if (!gameState.Saucers.Any(x => x.Type == spawnRate.Type) && random.NextFloat() < spawnRate.Chance)
-                {
-                    var saucer = SpawnSaucer(saucersConfig.Saucers.GetSaucerConfigFor(spawnRate.Type), worldBounds);
-                    gameState.Saucers.Add(saucer);
-                }
-            }
-        }
 
-        foreach (var saucer in gameState.Saucers)
-        {
-            saucer.TurnCooldown -= Time.deltaTime;
-            if (saucer.TurnCooldown < 0f)
-            {
-                Debug.Log($"Try turn {saucer.Type} saucer");
-                var saucerConfig = saucersConfig.Saucers.GetSaucerConfigFor(saucer.Type);
-                saucer.TurnCooldown = saucerConfig.Movement.TurnCooldown;
-                if (random.NextFloat() < saucerConfig.Movement.TurnChance)
-                {
-                    var newVerticalComponent = random.NextFloat() switch
-                    {
-                        < 0.33f => 1f,
-                        < 0.66f => 0f,
-                        _ => -1f
-                    };
 
-                    saucer.LinearVelocity = new Vector2(Mathf.Sign(saucer.LinearVelocity.x), newVerticalComponent).normalized * saucerConfig.Movement.Speed;
-                }
-            }
-        }
-
-        var saucersToRemove = new List<Saucer>();
-        foreach (var saucer in gameState.Saucers)
-        {
-            if (saucer.LinearVelocity.x > 0 && saucer.Position.x > worldBounds.max.x)
-            {
-                Debug.Log($"Saucer {saucer.Type} crossed the screen on the right");
-                saucersToRemove.Add(saucer);
-            }
-            else if (saucer.LinearVelocity.x < 0 && saucer.Position.x < worldBounds.min.x)
-            {
-                Debug.Log($"Saucer {saucer.Type} crossed the screen on the left");
-                saucersToRemove.Add(saucer);
-            }
-        }
-
-        foreach (var saucer in saucersToRemove)
-        {
-            saucersPool.Add(saucer);
-            gameState.Saucers.Remove(saucer);
-        }
-
-        HandleDestroyedSaucers(gameState);
-    }
-
-    void HandleDestroyedSaucers(GameState gameState)
-    {
-        var saucersToRemove = new List<Saucer>();
-        foreach (var saucer in gameState.Saucers)
-        {
-            if (saucer.IsDestroyed)
-            {
-                saucersToRemove.Add(saucer);
-            }
-        }
-
-        foreach (var saucer in saucersToRemove)
-        {
-            saucersPool.Add(saucer);
-            gameState.Saucers.Remove(saucer);
-        }
-    }
-
-    Saucer SpawnSaucer(SaucerConfig saucerConfig, Bounds worldBounds)
-    {
-        var random = new Random();
-
-        var saucer = saucersPool.Get();
-
-        saucer.Type = saucerConfig.Type;
-
-        var direction = random.NextFloat() > 0.5f ? 1 : -1;
-        saucer.Position = new Vector2(direction < 0f ? worldBounds.size.x : 0, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
-        saucer.LinearVelocity = new Vector2(direction, 0) * saucerConfig.Movement.Speed;
-        saucer.TurnCooldown = random.NextFloat() * saucerConfig.Movement.TurnCooldown;
-        saucer.IsDestroyed = false;
-
-        return saucer;
-    }
 
 
 

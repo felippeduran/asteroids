@@ -6,15 +6,13 @@ namespace Gameplay.Simulation.Runtime
     public class BulletsController
     {
         readonly ObjectPool<Bullet> bulletsPool;
-        readonly GameState gameState;
 
-        public BulletsController(ObjectPool<Bullet> bulletsPool, GameState gameState)
+        public BulletsController(ObjectPool<Bullet> bulletsPool)
         {
             this.bulletsPool = bulletsPool;
-            this.gameState = gameState;
         }
 
-        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, List<Bullet> existingBullets, GameConfig gameConfig)
+        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref GameState gameState, List<Bullet> existingBullets, GameConfig gameConfig)
         {
             foreach (var bulletData in bulletsFired)
             {
@@ -34,7 +32,7 @@ namespace Gameplay.Simulation.Runtime
                 }
             }
 
-            HandleDestroyedBullets(gameState);
+            HandleDestroyedBullets(ref gameState);
         }
 
         Bullet SpawnBullet(FireBulletData bulletData, GameConfig gameConfig)
@@ -52,7 +50,7 @@ namespace Gameplay.Simulation.Runtime
             return bullet;
         }
 
-        void HandleDestroyedBullets(GameState gameState)
+        void HandleDestroyedBullets(ref GameState gameState)
         {
             List<Bullet> bulletsToRemove = new();
             foreach (var bullet in gameState.Bullets)
