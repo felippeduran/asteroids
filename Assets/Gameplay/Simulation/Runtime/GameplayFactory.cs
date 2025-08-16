@@ -24,17 +24,17 @@ namespace Gameplay.Simulation.Runtime
 
             var gameState = new GameState
             {
-                Wave = 0,
-                Player = new PlayerState
+                WaveState = new AsteroidWaveState { Current = 0 },
+                PlayerState = new PlayerState
                 {
                     Score = 0,
                     Lives = gameConfig.InitialLives,
                 },
+                SaucersState = new SaucersState { SpawnCooldown = gameConfig.Saucers.SpawnCooldown },
                 PlayerShip = playerShip,
                 Asteroids = new HashSet<Asteroid>(),
                 Saucers = new List<Saucer>(),
                 Bullets = new List<Bullet>(),
-                SaucerSpawnCooldown = gameConfig.Saucers.SpawnCooldown,
             };
 
             var asteroidsPool = new ObjectPool<Asteroid>(assets.AsteroidPrefab);

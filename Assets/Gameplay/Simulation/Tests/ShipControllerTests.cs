@@ -12,14 +12,14 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithNoInput_ShouldResetAngularVelocity()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { AngularVelocity = 45f };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0f, fakeShip.AngularVelocity);
@@ -28,55 +28,55 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithTurnLeftInput_ShouldSetPositiveAngularVelocity()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { TurnLeft = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
-            Assert.AreEqual(gameConfig.Ship.TurnSpeed, fakeShip.AngularVelocity);
+            Assert.AreEqual(shipConfig.TurnSpeed, fakeShip.AngularVelocity);
         }
 
         [Test]
         public void UpdateShip_WithTurnRightInput_ShouldSetNegativeAngularVelocity()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { TurnRight = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
-            Assert.AreEqual(-gameConfig.Ship.TurnSpeed, fakeShip.AngularVelocity);
+            Assert.AreEqual(-shipConfig.TurnSpeed, fakeShip.AngularVelocity);
         }
 
         [Test]
         public void UpdateShip_WithThrustInput_ShouldApplyThrustForce()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { Forward = Vector2.up };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Thrust = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
-            Assert.AreEqual(gameConfig.Ship.ThrustForce * Vector2.up, fakeShip.ThrustForce);
+            Assert.AreEqual(shipConfig.ThrustForce * Vector2.up, fakeShip.ThrustForce);
         }
 
         [Test]
         public void UpdateShip_WithFireInput_ShouldReturnBulletData()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip
             { 
@@ -87,7 +87,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(1, bulletsFired.Length);
@@ -99,7 +99,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithTeleportInput_ShouldMoveShipToRandomPosition()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var originalPosition = new Vector2(1f, 1f);
             var fakeShip = new FakeShip { Position = originalPosition };
@@ -107,7 +107,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Teleport = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreNotEqual(originalPosition, fakeShip.Position);
@@ -117,7 +117,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithMultipleInputs_ShouldHandleAllInputs()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { Forward = Vector2.up };
             var playerState = new PlayerState { Lives = 3 };
@@ -129,25 +129,25 @@ namespace Gameplay.Simulation.Tests
             };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
-            Assert.AreEqual(gameConfig.Ship.TurnSpeed, fakeShip.AngularVelocity);
-            Assert.AreEqual(gameConfig.Ship.ThrustForce * Vector2.up, fakeShip.ThrustForce);
+            Assert.AreEqual(shipConfig.TurnSpeed, fakeShip.AngularVelocity);
+            Assert.AreEqual(shipConfig.ThrustForce * Vector2.up, fakeShip.ThrustForce);
             Assert.AreEqual(1, bulletsFired.Length);
         }
 
         [Test]
         public void UpdateShip_WhenGameOver_ShouldNotProcessInput()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { };
             var playerState = new PlayerState { Lives = 0 };
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0, bulletsFired.Length);
@@ -156,14 +156,14 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WhenReviving_ShouldNotProcessInput()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true };    
             var playerState = new PlayerState { Lives = 3, Reviving = true };
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0, bulletsFired.Length);
@@ -172,7 +172,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WhenShipDestroyed_ShouldDecreaseLivesAndStartReviving()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true };
             int initialLives = 3;
@@ -180,26 +180,26 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(initialLives - 1, playerState.Lives);
             Assert.IsTrue(playerState.Reviving);
-            Assert.AreEqual(gameConfig.ReviveCooldown, playerState.ReviveCooldown);
+            Assert.AreEqual(shipConfig.ReviveCooldown, playerState.ReviveCooldown);
             Assert.IsFalse(fakeShip.IsActive);
         }
 
         [Test]
         public void UpdateShip_WhenRevivingAndCooldownExpired_ShouldReviveShip()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true, IsActive = false };
             var playerState = new PlayerState { Reviving = true, ReviveCooldown = 0f };
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.IsFalse(playerState.Reviving);
@@ -212,7 +212,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WhenRevivingAndCooldownNotExpired_ShouldContinueReviving()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true, IsActive = false };
             var initialReviveCooldown = 1f;
@@ -220,7 +220,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.IsTrue(playerState.Reviving);
@@ -230,7 +230,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WhenGameOverAndShipDestroyed_ShouldNotDecreaseLives()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true };
             int initialLives = 0;
@@ -238,7 +238,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(initialLives, playerState.Lives);
@@ -248,7 +248,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WhenRevivingAndShipDestroyed_ShouldNotDecreaseLives()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { IsDestroyed = true };
             int initialLives = 3;
@@ -256,7 +256,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
 
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(initialLives, playerState.Lives);
             Assert.IsTrue(playerState.Reviving);
@@ -265,14 +265,14 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithNoInput_ShouldReturnEmptyBulletArray()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip { };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput();
 
 
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(0, bulletsFired.Length);
         }
@@ -280,7 +280,7 @@ namespace Gameplay.Simulation.Tests
         [Test]
         public void UpdateShip_WithFireInput_ShouldUseCorrectBulletSpawnPosition()
         {
-            var gameConfig = CreateGameConfig();
+            var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip
             {
@@ -290,7 +290,7 @@ namespace Gameplay.Simulation.Tests
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Fire = true };
 
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, gameConfig, worldBounds);
+            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(fakeShip.BulletSpawnPosition, bulletsFired[0].Position);
         }
@@ -301,15 +301,12 @@ namespace Gameplay.Simulation.Tests
             return new ShipController(fakeInputProvider);
         }
 
-        GameConfig CreateGameConfig()
+        ShipConfig CreateShipConfig()
         {
-            return new GameConfig
+            return new ShipConfig
             {
-                Ship = new ShipConfig
-                {
-                    ThrustForce = 10f,
-                    TurnSpeed = 90f
-                },
+                ThrustForce = 10f,
+                TurnSpeed = 90f,
                 ReviveCooldown = 2f
             };
         }

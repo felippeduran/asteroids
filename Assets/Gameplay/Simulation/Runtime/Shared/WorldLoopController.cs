@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -6,24 +7,24 @@ namespace Gameplay.Simulation.Runtime
     {
         public WorldLoopController() { }
 
-        public void LoopObjectsThroughWorld(ref GameState gameState, Bounds worldBounds)
+        public void LoopObjectsThroughWorld(IShip playerShip, ISet<Asteroid> existingAsteroids, List<Saucer> existingSaucers, List<Bullet> existingBullets, Bounds worldBounds)
         {
-            foreach (var asteroid in gameState.Asteroids)
+            foreach (var asteroid in existingAsteroids)
             {
                 asteroid.Position = GetLoopedPosition(asteroid.Position, worldBounds);
             }
 
-            foreach (var saucer in gameState.Saucers)
+            foreach (var saucer in existingBullets)
             {
                 saucer.Position = GetLoopedPosition(saucer.Position, worldBounds);
             }
 
-            foreach (var bullet in gameState.Bullets)
+            foreach (var bullet in existingBullets)
             {
                 bullet.Position = GetLoopedPosition(bullet.Position, worldBounds);
             }
 
-            gameState.PlayerShip.Position = GetLoopedPosition(gameState.PlayerShip.Position, worldBounds);
+            playerShip.Position = GetLoopedPosition(playerShip.Position, worldBounds);
         }
 
         Vector2 GetLoopedPosition(Vector2 position, Bounds bounds)

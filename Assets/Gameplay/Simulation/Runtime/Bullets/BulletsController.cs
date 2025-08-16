@@ -19,11 +19,11 @@ namespace Gameplay.Simulation.Runtime
             this.bulletsPool = bulletsPool;
         }
 
-        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref GameState gameState, List<Bullet> existingBullets, GameConfig gameConfig)
+        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref PlayerState playerState, List<Bullet> existingBullets, BulletsConfig bulletsConfig)
         {
             foreach (var bulletData in bulletsFired)
             {
-                var bullet = SpawnBullet(bulletData, gameConfig);
+                var bullet = SpawnBullet(bulletData, bulletsConfig);
                 existingBullets.Add(bullet);
             }
 
@@ -32,23 +32,23 @@ namespace Gameplay.Simulation.Runtime
                 if (!bullet.IsDestroyed)
                 {
                     bullet.TotalTraveledDistance += bullet.LinearVelocity.magnitude * deltaTime;
-                    if (bullet.TotalTraveledDistance > gameConfig.BulletTravelDistance)
+                    if (bullet.TotalTraveledDistance > bulletsConfig.TravelDistance)
                     {
                         bullet.IsDestroyed = true;
                     }
                 }
             }
 
-            HandleDestroyedBullets(ref gameState);
+            HandleDestroyedBullets(ref playerState, existingBullets);
         }
 
-        Bullet SpawnBullet(FireBulletData bulletData, GameConfig gameConfig)
+        Bullet SpawnBullet(FireBulletData bulletData, BulletsConfig bulletsConfig)
         {
             Bullet bullet = bulletsPool.Get();
 
             bullet.IsDestroyed = false;
             bullet.Position = bulletData.Position;
-            bullet.LinearVelocity = gameConfig.BulletSpeed * bulletData.Forward;
+            bullet.LinearVelocity = bulletsConfig.Speed * bulletData.Forward;
             bullet.TotalTraveledDistance = 0f;
             bullet.Score = 0;
             bullet.IsPlayerBullet = bulletData.IsPlayerBullet;
@@ -57,14 +57,14 @@ namespace Gameplay.Simulation.Runtime
             return bullet;
         }
 
-        void HandleDestroyedBullets(ref GameState gameState)
+        void HandleDestroyedBullets(ref PlayerState playerState, List<Bullet> existingBullets)
         {
             List<Bullet> bulletsToRemove = new();
-            foreach (var bullet in gameState.Bullets)
+            foreach (var bullet in existingBullets)
             {
                 if (bullet.IsDestroyed)
                 {
-                    gameState.Player.Score += bullet.Score;
+                    playerState.Score += bullet.Score;
                     bulletsToRemove.Add(bullet);
                 }
             }
@@ -72,7 +72,7 @@ namespace Gameplay.Simulation.Runtime
             foreach (var bullet in bulletsToRemove)
             {
                 bulletsPool.Add(bullet);
-                gameState.Bullets.Remove(bullet);
+                existingBullets.Remove(bullet);
             }
         }
     }

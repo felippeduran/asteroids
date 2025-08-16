@@ -11,17 +11,17 @@ namespace Gameplay.Simulation.Runtime
             this.inputProvider = inputProvider;
         }
 
-        public FireBulletData[] UpdateShip(float deltaTime, IShip ship, ref PlayerState playerState, GameConfig gameConfig, Bounds worldBounds)
+        public FireBulletData[] UpdateShip(float deltaTime, IShip ship, ref PlayerState playerState, ShipConfig shipConfig, Bounds worldBounds)
         {
             ship.AngularVelocity = 0;
 
             var bulletsFired = new FireBulletData[] { };
             if (!playerState.GameOver && !playerState.Reviving)
             {
-                bulletsFired = HandleShipInput(inputProvider.GetPlayerInput(), ship, worldBounds, gameConfig.Ship);
+                bulletsFired = HandleShipInput(inputProvider.GetPlayerInput(), ship, worldBounds, shipConfig);
             }
 
-            HandleDestroyedShip(deltaTime, ship, ref playerState, gameConfig);
+            HandleDestroyedShip(deltaTime, ship, ref playerState, shipConfig);
             return bulletsFired;
         }
 
@@ -75,7 +75,7 @@ namespace Gameplay.Simulation.Runtime
             };
         }
 
-        void HandleDestroyedShip(float deltaTime, IShip ship, ref PlayerState playerState, GameConfig gameConfig)
+        void HandleDestroyedShip(float deltaTime, IShip ship, ref PlayerState playerState, ShipConfig shipConfig)
         {
             if (playerState.Reviving)
             {
@@ -89,7 +89,7 @@ namespace Gameplay.Simulation.Runtime
                     ReviveShip(ship);
                 }
             }
-            
+
             if (ship.IsDestroyed)
             {
                 ship.Disable();
@@ -102,7 +102,7 @@ namespace Gameplay.Simulation.Runtime
                     {
                         Debug.Log("Reviving ship");
                         playerState.Reviving = true;
-                        playerState.ReviveCooldown = gameConfig.ReviveCooldown;
+                        playerState.ReviveCooldown = shipConfig.ReviveCooldown;
                     }
                 }
             }

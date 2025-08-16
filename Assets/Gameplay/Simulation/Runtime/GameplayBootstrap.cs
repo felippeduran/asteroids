@@ -34,13 +34,13 @@ public class GameplayBootstrap : MonoBehaviour
     {
         var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
 
-        var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
-        var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState, gameConfig.Saucers, worldBounds);
+        var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, worldBounds);
+        var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, worldBounds);
         bulletsFired = bulletsFired.Concat(moreBulletsFired).ToArray();
-        gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState, gameState.Bullets, gameConfig);
+        gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState.PlayerState, gameState.Bullets, gameConfig.Bullets);
 
-        gameSystems.AsteroidsController.UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
-        gameSystems.WorldLoopController.LoopObjectsThroughWorld(ref gameState, worldBounds);
+        gameSystems.AsteroidsController.UpdateAsteroids(Time.deltaTime, ref gameState.WaveState, gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameConfig.Asteroids, worldBounds);
+        gameSystems.WorldLoopController.LoopObjectsThroughWorld(gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameState.Bullets, worldBounds);
 
 
         OnUpdate(gameState);
@@ -50,8 +50,8 @@ public class GameplayBootstrap : MonoBehaviour
     {
         if (gameState.PlayerShip != null)
         {
-            Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.SpawnRange.Min);
-            Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.SpawnRange.Max);
+            Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.Asteroids.SpawnRange.Min);
+            Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.Asteroids.SpawnRange.Max);
         }
     }
 

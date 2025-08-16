@@ -166,34 +166,30 @@ MonoBehaviour:
   gameConfig:
     InitialLives: 3
     Ship:
-      ThrustForce: 2
+      ThrustForce: 6
       TurnSpeed: 100
-    NextWaveCooldown: 2
-    InitialAsteroids: 4
-    ExtraAsteroidsPerWave: 1
-    SpawnRange:
-      Min: 13
-      Max: 19
-    AsteroidSpeedRange:
-      Min: 0.2
-      Max: 5
-    AsteroidSplitAngle: 180
-    BulletSpeed: 30
-    BulletTravelDistance: 13
-    Scoring:
-      Asteroids:
+      ReviveCooldown: 2
+    Asteroids:
+      Initial: 4
+      ExtraPerWave: 1
+      NextWaveCooldown: 1.5
+      SpawnRange:
+        Min: 13
+        Max: 19
+      SpeedRange:
+        Min: 0.2
+        Max: 5
+      SplitAngle: 180
+      Scores:
       - Type: 0
         Score: 100
       - Type: 1
         Score: 50
       - Type: 2
         Score: 20
-      Saucers:
-      - Type: 0
-        Score: 1000
-      - Type: 1
-        Score: 200
-    ReviveCooldown: 2
+    Bullets:
+      Speed: 25
+      TravelDistance: 15
     Saucers:
       Saucers:
       - Type: 0
@@ -219,6 +215,11 @@ MonoBehaviour:
         Chance: 0.2
       - Type: 1
         Chance: 0.4
+      Scores:
+      - Type: 0
+        Score: 1000
+      - Type: 1
+        Score: 200
       SpawnCooldown: 5
   gameplayAssets: {fileID: 11400000, guid: 581e8cd2757fc4d279cd5d45a5b8ebe8, type: 2}
 --- !u!1 &938205331

@@ -4,11 +4,9 @@ using System.Collections.Generic;
 [Serializable]
 public struct GameState
 {
-    public int Wave;
-    public bool NextWave;
-    public float NextWaveCooldown;
-    public float SaucerSpawnCooldown;
-    public PlayerState Player;
+    public AsteroidWaveState WaveState;
+    public SaucersState SaucersState;
+    public PlayerState PlayerState;
     public Ship PlayerShip;
     public HashSet<Asteroid> Asteroids;
     public List<Saucer> Saucers;

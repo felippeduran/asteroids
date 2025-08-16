@@ -16,23 +16,23 @@ namespace Gameplay.Simulation.Runtime
             this.random = new Random();
         }
 
-        public FireBulletData[] UpdateSaucers(float deltaTime, ref GameState gameState, SaucersConfig saucersConfig, Bounds worldBounds)
+        public FireBulletData[] UpdateSaucers(float deltaTime, ref SaucersState saucerState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
         {
-            HandleSaucerSpawning(deltaTime, ref gameState, gameState.Saucers, saucersConfig, worldBounds);
-            HandleSaucerMovement(deltaTime, gameState.Saucers, saucersConfig);
-            var firedBullets = HandleSaucerShooting(deltaTime, gameState.Saucers, saucersConfig);
-            HandleSaucerBoundaryCrossing(gameState.Saucers, worldBounds);
-            HandleDestroyedSaucers(gameState.Saucers);
+            HandleSaucerSpawning(deltaTime, ref saucerState, existingSaucers, saucersConfig, worldBounds);
+            HandleSaucerMovement(deltaTime, existingSaucers, saucersConfig);
+            var firedBullets = HandleSaucerShooting(deltaTime, existingSaucers, saucersConfig);
+            HandleSaucerBoundaryCrossing(existingSaucers, worldBounds);
+            HandleDestroyedSaucers(existingSaucers);
             return firedBullets;
         }
 
-        void HandleSaucerSpawning(float deltaTime, ref GameState gameState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
+        void HandleSaucerSpawning(float deltaTime, ref SaucersState saucersState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
         {
-            gameState.SaucerSpawnCooldown -= deltaTime;
-            if (gameState.SaucerSpawnCooldown < 0f)
+            saucersState.SpawnCooldown -= deltaTime;
+            if (saucersState.SpawnCooldown < 0f)
             {
                 Debug.Log("Try spawning saucers");
-                gameState.SaucerSpawnCooldown = saucersConfig.SpawnCooldown;
+                saucersState.SpawnCooldown = saucersConfig.SpawnCooldown;
                 foreach (var spawnRate in saucersConfig.SpawnConfigs)
                 {
                     if (!existingSaucers.Any(x => x.Type == spawnRate.Type) && random.NextFloat() < spawnRate.Chance)

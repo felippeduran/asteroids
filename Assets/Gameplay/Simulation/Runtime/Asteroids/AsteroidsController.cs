@@ -12,52 +12,52 @@ namespace Gameplay.Simulation.Runtime
             this.asteroidsPool = asteroidsPool;
         }
 
-        public void UpdateAsteroids(float deltaTime, ref GameState gameState, GameConfig gameConfig, Bounds worldBounds)
+        public void UpdateAsteroids(float deltaTime, ref AsteroidWaveState waveState, IShip playerShip, ISet<Asteroid> existingAsteroids, List<Saucer> existingSaucers, AsteroidsConfig asteroidsConfig, Bounds worldBounds)
         {
-            HandleWaveSpawning(deltaTime, ref gameState, gameConfig, worldBounds);
-            HandleWaveScheduling(ref gameState, gameConfig);
-            HandleDestroyedAsteroids(ref gameState, gameConfig);
+            HandleWaveSpawning(deltaTime, ref waveState, playerShip, existingAsteroids, asteroidsConfig, worldBounds);
+            HandleWaveScheduling(ref waveState, existingSaucers, existingAsteroids, asteroidsConfig);
+            HandleDestroyedAsteroids(existingAsteroids, asteroidsConfig);
         }
 
-        void HandleWaveSpawning(float deltaTime, ref GameState gameState, GameConfig gameConfig, Bounds worldBounds)
+        void HandleWaveSpawning(float deltaTime, ref AsteroidWaveState waveState, IShip playerShip, ISet<Asteroid> existingAsteroids, AsteroidsConfig asteroidsConfig, Bounds worldBounds)
         {
-            if (gameState.NextWave)
+            if (waveState.NextWave)
             {
-                gameState.NextWaveCooldown -= deltaTime;
-                if (gameState.NextWaveCooldown < 0f)
+                waveState.NextWaveCooldown -= deltaTime;
+                if (waveState.NextWaveCooldown < 0f)
                 {
                     Debug.Log("Next wave!");
-                    gameState.NextWave = false;
-                    gameState.Wave++;
-                    var numberOfAsteroids = gameConfig.InitialAsteroids + (gameState.Wave - 1) * gameConfig.ExtraAsteroidsPerWave;
+                    waveState.NextWave = false;
+                    waveState.Current++;
+                    var numberOfAsteroids = asteroidsConfig.Initial + (waveState.Current - 1) * asteroidsConfig.ExtraPerWave;
                     for (int i = 0; i < numberOfAsteroids; i++)
                     {
-                        var spawnPosition = GetRandomAsteroidSpawnPosition(gameState.PlayerShip.Position, gameConfig.SpawnRange, worldBounds);
-                        var spawnVelocity = GetRandomAsteroidSpawnVelocity(gameConfig.AsteroidSpeedRange);
+                        var spawnPosition = GetRandomAsteroidSpawnPosition(playerShip.Position, asteroidsConfig.SpawnRange, worldBounds);
+                        var spawnVelocity = GetRandomAsteroidSpawnVelocity(asteroidsConfig.SpeedRange);
 
-                        var scoreConfig = gameConfig.Scoring.Asteroids.GetScoreConfigFor(AsteroidType.Large);
+                        var scoreConfig = asteroidsConfig.Scores.GetScoreConfigFor(AsteroidType.Large);
                         var asteroid = SpawnAsteroid(spawnPosition, spawnVelocity, scoreConfig);
-                        gameState.Asteroids.Add(asteroid);
+                        existingAsteroids.Add(asteroid);
                     }
                 }
             }
         }
 
-        void HandleWaveScheduling(ref GameState gameState, GameConfig gameConfig)
+        void HandleWaveScheduling(ref AsteroidWaveState waveState, List<Saucer> existingSaucers, ISet<Asteroid> existingAsteroids, AsteroidsConfig asteroidsConfig)
         {
-            if (gameState.Saucers.Count == 0 && gameState.Asteroids.Count == 0 && !gameState.NextWave)
+            if (existingSaucers.Count == 0 && existingAsteroids.Count == 0 && !waveState.NextWave)
             {
                 Debug.Log("Schedule next wave");
-                gameState.NextWave = true;
-                gameState.NextWaveCooldown = gameConfig.NextWaveCooldown;
+                waveState.NextWave = true;
+                waveState.NextWaveCooldown = asteroidsConfig.NextWaveCooldown;
             }
         }
 
-        void HandleDestroyedAsteroids(ref GameState gameState, GameConfig gameConfig)
+        void HandleDestroyedAsteroids(ISet<Asteroid> existingAsteroids, AsteroidsConfig asteroidsConfig)
         {
             List<Asteroid> asteroidsToRemove = new();
             List<Asteroid> asteroidsToAdd = new();
-            foreach (var asteroid in gameState.Asteroids)
+            foreach (var asteroid in existingAsteroids)
             {
                 if (asteroid.IsDestroyed)
                 {
@@ -72,9 +72,9 @@ namespace Gameplay.Simulation.Runtime
 
                         for (int i = 0; i < 2; i++)
                         {
-                            var randomVelocity = GetRandomVelocityFromCone(linearVelocity, gameConfig.AsteroidSplitAngle, gameConfig.AsteroidSpeedRange);
+                            var randomVelocity = GetRandomVelocityFromCone(linearVelocity, asteroidsConfig.SplitAngle, asteroidsConfig.SpeedRange);
 
-                            var asteroidConfig = gameConfig.Scoring.Asteroids.GetScoreConfigFor(AsteroidType.Medium);
+                            var asteroidConfig = asteroidsConfig.Scores.GetScoreConfigFor(AsteroidType.Medium);
                             var newAsteroid = SpawnAsteroid(asteroid.Position, randomVelocity, asteroidConfig);
                             asteroidsToAdd.Add(newAsteroid);
                         }
@@ -88,9 +88,9 @@ namespace Gameplay.Simulation.Runtime
 
                         for (int i = 0; i < 2; i++)
                         {
-                            var randomVelocity = GetRandomVelocityFromCone(linearVelocity, gameConfig.AsteroidSplitAngle, gameConfig.AsteroidSpeedRange);
+                            var randomVelocity = GetRandomVelocityFromCone(linearVelocity, asteroidsConfig.SplitAngle, asteroidsConfig.SpeedRange);
 
-                            var asteroidConfig = gameConfig.Scoring.Asteroids.GetScoreConfigFor(AsteroidType.Small);
+                            var asteroidConfig = asteroidsConfig.Scores.GetScoreConfigFor(AsteroidType.Small);
                             var newAsteroid = SpawnAsteroid(asteroid.Position, randomVelocity, asteroidConfig);
                             asteroidsToAdd.Add(newAsteroid);
                         }
@@ -101,12 +101,12 @@ namespace Gameplay.Simulation.Runtime
             foreach (var asteroid in asteroidsToRemove)
             {
                 asteroidsPool.Add(asteroid);
-                gameState.Asteroids.Remove(asteroid);
+                existingAsteroids.Remove(asteroid);
             }
 
             foreach (var asteroid in asteroidsToAdd)
             {
-                gameState.Asteroids.Add(asteroid);
+                existingAsteroids.Add(asteroid);
             }
         }
 
