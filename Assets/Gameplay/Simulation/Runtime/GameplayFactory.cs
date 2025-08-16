@@ -41,11 +41,13 @@ namespace Gameplay.Simulation.Runtime
             var bulletsPool = new ObjectPool<Bullet>(assets.BulletPrefab);
             var saucersPool = new ObjectPool<Saucer>(assets.SaucerPrefab);
 
-            var cameras = GameObject.Instantiate<CameraGroup>(assets.Cameras);
+        var cameras = GameObject.Instantiate<CameraGroup>(assets.Cameras);
 
-            var gameLoopObject = new GameObject("GameLoop");
-            var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
-            bootstrap.Setup(gameState, gameConfig, cameras, asteroidsPool, bulletsPool, saucersPool);
+        var shipController = new ShipController();
+
+        var gameLoopObject = new GameObject("GameLoop");
+        var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
+        bootstrap.Setup(gameState, gameConfig, cameras, asteroidsPool, bulletsPool, saucersPool, shipController);
 
             return bootstrap;
         }

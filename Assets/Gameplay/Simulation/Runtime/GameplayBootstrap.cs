@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Gameplay.Simulation.Runtime;
 
 public class GameplayBootstrap : MonoBehaviour
 {
@@ -14,8 +15,9 @@ public class GameplayBootstrap : MonoBehaviour
     ObjectPool<Asteroid> asteroidsPool;
     ObjectPool<Bullet> bulletsPool;
     ObjectPool<Saucer> saucersPool;
+    ShipController shipController;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool)
+    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, ObjectPool<Asteroid> asteroidsPool, ObjectPool<Bullet> bulletsPool, ObjectPool<Saucer> saucersPool, ShipController shipController)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
@@ -23,15 +25,17 @@ public class GameplayBootstrap : MonoBehaviour
         this.asteroidsPool = asteroidsPool;
         this.bulletsPool = bulletsPool;
         this.saucersPool = saucersPool;
+        this.shipController = shipController;
     }
 
     void Update()
     {
         var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
 
-        UpdateShip(gameState.PlayerShip, ref gameState.Player, worldBounds);
+        var bulletsFired = shipController.UpdateShip(gameState.PlayerShip, ref gameState.Player, gameConfig, worldBounds);
+
         UpdateAsteroids(Time.deltaTime, ref gameState, gameConfig, worldBounds);
-        UpdateBullets(Time.deltaTime, gameConfig, gameState.Bullets);
+        UpdateBullets(Time.deltaTime, bulletsFired, gameState.Bullets, gameConfig);
         UpdateSaucers(gameConfig.Saucers, ref gameState, worldBounds);
 
         LoopObjectsThroughWorld(worldBounds, gameState);
@@ -49,44 +53,7 @@ public class GameplayBootstrap : MonoBehaviour
         }
     }
 
-    void UpdateShip(Ship ship, ref PlayerState playerState, Bounds worldBounds)
-    {
-        ship.Reset();
 
-        if (!playerState.GameOver && !playerState.Reviving)
-        {
-            if (Input.GetKey(KeyCode.A))
-            {
-                ship.TurnLeft();
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                ship.TurnRight();
-            }
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                ship.Thrust();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                // TODO: Fire a bullet
-                var bullet = SpawnBullet(ship.Position, ship.Forward, gameConfig);
-                bullet.IsPlayerBullet = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                // TODO: Teleport the ship to a random position
-                var random = new Random();
-                ship.Position = new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
-            }
-        }
-
-        HandleDestroyedShip(Time.deltaTime, ship, ref playerState, gameConfig);
-    }
 
     void UpdateSaucers(SaucersConfig saucersConfig, ref GameState gameState, Bounds worldBounds)
     {
@@ -188,23 +155,13 @@ public class GameplayBootstrap : MonoBehaviour
         return saucer;
     }
 
-    Bullet SpawnBullet(Vector2 position, Vector2 forward, GameConfig gameConfig)
+    void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, List<Bullet> bullets, GameConfig gameConfig)
     {
-        Bullet bullet = bulletsPool.Get();
+        foreach (var bulletFired in bulletsFired)
+        {
+            SpawnBullet(bulletFired.Position, bulletFired.Forward, gameConfig);
+        }
 
-        bullet.IsDestroyed = false;
-        bullet.Position = position;
-        bullet.LinearVelocity = gameConfig.BulletSpeed * forward;
-        bullet.TotalTraveledDistance = 0f;
-        bullet.Score = 0;
-        gameState.Bullets.Add(bullet);
-        Debug.Log($"Spawned bullet at {bullet.Position} with velocity {bullet.LinearVelocity}, forward {forward}");
-
-        return bullet;
-    }
-
-    void UpdateBullets(float deltaTime, GameConfig gameConfig, IEnumerable<Bullet> bullets)
-    {
         foreach (var bullet in bullets)
         {
             if (!bullet.IsDestroyed)
@@ -220,39 +177,19 @@ public class GameplayBootstrap : MonoBehaviour
         HandleDestroyedBullets(gameState);
     }
 
-    void HandleDestroyedShip(float deltaTime, Ship ship, ref PlayerState playerState, GameConfig gameConfig)
+    Bullet SpawnBullet(Vector2 position, Vector2 forward, GameConfig gameConfig)
     {
-        if (ship.IsDestroyed)
-        {
-            ship.Disable();
+        Bullet bullet = bulletsPool.Get();
 
-            if (!playerState.Reviving && !playerState.GameOver)
-            {
-                Debug.Log("Ship destroyed");
-                playerState.Lives--;
-                if (playerState.Lives > 0)
-                {
-                    Debug.Log("Reviving ship");
-                    playerState.Reviving = true;
-                    playerState.ReviveCooldown = gameConfig.ReviveCooldown;
-                }
-            }
-        }
+        bullet.IsDestroyed = false;
+        bullet.Position = position;
+        bullet.LinearVelocity = gameConfig.BulletSpeed * forward;
+        bullet.TotalTraveledDistance = 0f;
+        bullet.Score = 0;
+        gameState.Bullets.Add(bullet);
+        Debug.Log($"Spawned bullet at {bullet.Position} with velocity {bullet.LinearVelocity}, forward {forward}");
 
-        if (playerState.Reviving)
-        {
-            playerState.ReviveCooldown -= deltaTime;
-
-            if (playerState.ReviveCooldown < 0f)
-            {
-                Debug.Log("Revive!");
-                // TODO: Watch out for the ship being destroyed again while reviving
-                playerState.Reviving = false;
-                ship.Position = new Vector2(0, 0);
-                ship.IsDestroyed = false;
-                ship.Enable();
-            }
-        }
+        return bullet;
     }
 
     void HandleDestroyedAsteroids(GameState gameState)
