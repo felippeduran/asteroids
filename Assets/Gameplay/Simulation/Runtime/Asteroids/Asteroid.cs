@@ -1,4 +1,5 @@
 using UnityEngine;
+using Company.Utilities.Runtime;
 
 [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(ScoreWorth))]
 public class Asteroid : MonoBehaviour, IPoolable

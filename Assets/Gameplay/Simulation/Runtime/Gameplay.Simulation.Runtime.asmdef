@@ -2,7 +2,8 @@
     "name": "Gameplay.Simulation.Runtime",
     "rootNamespace": "Gameplay.Simulation.Runtime",
     "references": [
-        "Company.Utilities.Runtime"
+        "Company.Utilities.Runtime",
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

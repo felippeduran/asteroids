@@ -10,10 +10,10 @@ namespace Application.Runtime
 {
     public class Bootstrap : MonoBehaviour
     {
-        [SerializeField] GameConfig gameConfig;
-        [SerializeField] GameplayAssets gameplayAssets;
-        [SerializeField] GameplayViewLibrary gameplayViewLibrary;
-        [SerializeField] MetagameViewLibrary metagameViewLibrary;
+        [SerializeField] GameConfigAsset gameConfigAsset;
+        [SerializeField] GameplayAssetLibrary gameplayAssetLibrary;
+        [SerializeField] GameplayUIAssetLibrary gameplayUIAssetLibrary;
+        [SerializeField] MetagameAssetLibrary metagameAssetLibrary;
 
         async void Start()
         {
@@ -23,17 +23,19 @@ namespace Application.Runtime
 #if UNITY_EDITOR
             Logger.logger = new UnityLogger();
 #endif
-            
+
+            await Addressables.InitializeAsync();
+
             var exitToken = UnityApplication.exitCancellationToken;
             while (!exitToken.IsCancellationRequested)
             {
-                var mainMenuPresenter = new MainMenuPresenter(metagameViewLibrary);
+                var mainMenuPresenter = new MainMenuPresenter(metagameAssetLibrary);
                 var play = await mainMenuPresenter.PresentAsync(exitToken);
                 if (play)
                 {
-                    var gameplayFactory = new GameplayFactory(gameplayAssets, gameConfig);
+                    var gameplayFactory = new GameplayFactory(gameplayAssetLibrary, gameConfigAsset.GameConfig);
 
-                    await new GameplayPresenter(gameplayViewLibrary, gameplayFactory).PresentAsync(exitToken);
+                    await new GameplayPresenter(gameplayUIAssetLibrary, gameplayFactory).PresentAsync(exitToken);
                 }
             }
         }

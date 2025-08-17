@@ -1,7 +1,10 @@
 {
     "name": "Company.Utilities.Runtime",
     "rootNamespace": "Company.Utilities.Runtime",
-    "references": [],
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

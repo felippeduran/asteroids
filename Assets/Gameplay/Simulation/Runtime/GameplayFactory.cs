@@ -1,23 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using Company.Utilities.Runtime;
 
 namespace Gameplay.Simulation.Runtime
 {
     public class GameplayFactory
     {
-        readonly GameplayAssets assets;
+        readonly GameplayAssetLibrary assetLibrary;
         readonly GameConfig gameConfig;
 
-        public GameplayFactory(GameplayAssets assets, GameConfig gameConfig)
+        public GameplayFactory(GameplayAssetLibrary assetLibrary, GameConfig gameConfig)
         {
-            this.assets = assets;
+            this.assetLibrary = assetLibrary;
             this.gameConfig = gameConfig;
         }
 
-        public GameplayBootstrap Create(IInputProvider inputProvider, ICameraGroup cameraGroup)
+        public async Task<IGameplay> CreateAsync(IInputProvider inputProvider, ICameraGroup cameraGroup)
         {
-            var playerShip = GameObject.Instantiate<Ship>(assets.ShipPrefab);
+            var assets = await assetLibrary.LoadAllAsync();
+
+            var playerShip = GameObject.Instantiate(assets.Ship);
+
             playerShip.Position = new Vector2(0, 0);
             playerShip.IsTeamPlayer = true;
             playerShip.IsDestroyed = false;
@@ -38,9 +43,9 @@ namespace Gameplay.Simulation.Runtime
                 Bullets = new List<Bullet>(),
             };
 
-            var asteroidsPool = new ObjectPool<Asteroid>(assets.AsteroidPrefab);
-            var bulletsPool = new ObjectPool<Bullet>(assets.BulletPrefab);
-            var saucersPool = new ObjectPool<Saucer>(assets.SaucerPrefab);
+            var asteroidsPool = new ObjectPool<Asteroid>(assets.Asteroid);
+            var bulletsPool = new ObjectPool<Bullet>(assets.Bullet);
+            var saucersPool = new ObjectPool<Saucer>(assets.Saucer);
 
             var gameSystems = new GameSystems
             {
@@ -56,9 +61,16 @@ namespace Gameplay.Simulation.Runtime
             var gameLoopObject = new GameObject("GameLoop");
             var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
 
-            var gameplayDisposer = new GameplayDisposer(playerShip, gameLoopObject, new IDisposable[] { asteroidsPool, bulletsPool, saucersPool });
+            var disposer = new BatchDisposer(
+                asteroidsPool,
+                bulletsPool,
+                saucersPool,
+                new DisposableGameObject(playerShip.gameObject),
+                new DisposableGameObject(gameLoopObject),
+                assets
+            );
 
-            bootstrap.Setup(gameState, gameConfig, gameSystems, gameplayDisposer);
+            bootstrap.Setup(gameState, gameConfig, gameSystems, disposer);
 
             return bootstrap;
         }

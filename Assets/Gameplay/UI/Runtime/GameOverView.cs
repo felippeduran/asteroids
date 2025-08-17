@@ -1,12 +1,10 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Company.Utilities.Runtime;
 using UnityEngine;
 
 namespace Gameplay.UI.Runtime
 {
-    public class GameOverView : View
+    public class GameOverView : MonoBehaviour, IGameOverView
     {
         bool exit = false;
 

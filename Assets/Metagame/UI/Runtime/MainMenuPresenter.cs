@@ -1,23 +1,27 @@
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Metagame.UI.Runtime
 {
+    public interface IMainMenuView
+    {
+        Task<bool> WaitForCompletionAsync(CancellationToken ct);
+    }
+
     public class MainMenuPresenter
     {
-        readonly MetagameViewLibrary metagameViewLibrary;
+        readonly MetagameAssetLibrary metagameAssetLibrary;
 
-        public MainMenuPresenter(MetagameViewLibrary metagameViewLibrary)
+        public MainMenuPresenter(MetagameAssetLibrary metagameAssetLibrary)
         {
-            this.metagameViewLibrary = metagameViewLibrary;
+            this.metagameAssetLibrary = metagameAssetLibrary;
         }
 
         public async Task<bool> PresentAsync(CancellationToken ct)
         {
-            using var mainMenuView = metagameViewLibrary.CreateMainMenuView();
+            using var mainMenuView = await metagameAssetLibrary.CreateMainMenuViewAsync();
 
-            return await mainMenuView.WaitForCompletionAsync(ct);
+            return await mainMenuView.Obj.WaitForCompletionAsync(ct);
         }
     }
 }

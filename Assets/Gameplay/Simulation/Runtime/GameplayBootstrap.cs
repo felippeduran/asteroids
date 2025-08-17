@@ -14,7 +14,12 @@ public struct GameSystems
     public WorldLoopController WorldLoopController;
 }
 
-public class GameplayBootstrap : MonoBehaviour, IDisposable
+public interface IGameplay : IDisposable
+{
+    Task<bool> WaitForCompletionAsync(CancellationToken ct);
+}
+
+public class GameplayBootstrap : MonoBehaviour, IGameplay
 {
     public event Action<GameState> OnUpdate = delegate { };
 
@@ -22,27 +27,29 @@ public class GameplayBootstrap : MonoBehaviour, IDisposable
     [SerializeField] GameState gameState;
 
     GameSystems gameSystems;
-    GameplayDisposer gameplayDisposer;
+    IDisposable disposer;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, GameSystems gameSystems, GameplayDisposer gameplayDisposer)
+    public void Setup(GameState gameState, GameConfig gameConfig, GameSystems gameSystems, IDisposable disposer)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
         this.gameSystems = gameSystems;
-        this.gameplayDisposer = gameplayDisposer;
+        this.disposer = disposer;
     }
 
-    public async Task WaitForCompletionAsync(CancellationToken ct)
+    public async Task<bool> WaitForCompletionAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested && !gameState.PlayerState.GameOver)
         {
             await Task.Yield();
         }
+
+        return gameState.PlayerState.GameOver;
     }
 
     public void Dispose()
     {
-        gameplayDisposer.Dispose();
+        disposer.Dispose();
     }
 
     void Update()

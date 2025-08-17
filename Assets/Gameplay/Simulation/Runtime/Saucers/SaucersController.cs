@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Company.Utilities.Runtime;
 using Random = Company.Utilities.Runtime.Random;
 using Logger = Company.Utilities.Runtime.Logger;
 
@@ -10,7 +11,7 @@ namespace Gameplay.Simulation.Runtime
     {
         readonly ObjectPool<Saucer> saucersPool;
         readonly Random random;
-        RaycastHit2D[] raycasHits = new RaycastHit2D[5];
+        readonly RaycastHit2D[] raycasHits = new RaycastHit2D[5];
 
         public SaucersController(ObjectPool<Saucer> saucersPool)
         {

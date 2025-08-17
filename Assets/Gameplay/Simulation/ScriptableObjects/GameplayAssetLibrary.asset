@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fec7a458a8d74bc3be7012bb87f5fa4, type: 3}
+  m_Name: GameplayAssetLibrary
+  m_EditorClassIdentifier: 
+  shipAsset:
+    m_AssetGUID: 603ff7d134a4e4e219588b10012714b0
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  asteroidAsset:
+    m_AssetGUID: 43fadd736fc7e4f919996694736d095c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  bulletAsset:
+    m_AssetGUID: 5299397c6a3d24fa19a65738cfa039c1
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  saucerAsset:
+    m_AssetGUID: 41204cd2f0c23418dafe65d2193e6c35
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

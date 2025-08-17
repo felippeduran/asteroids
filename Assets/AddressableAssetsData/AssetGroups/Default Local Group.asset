@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_GUID: be23d6841dd0e4253af6cd9e1590659c
+  m_SerializeEntries:
+  - m_GUID: 35584bba2f86042ccae20687621447d9
+    m_Address: MainMenuView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41204cd2f0c23418dafe65d2193e6c35
+    m_Address: Saucer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43fadd736fc7e4f919996694736d095c
+    m_Address: Asteroid
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5299397c6a3d24fa19a65738cfa039c1
+    m_Address: Bullet
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5865cc3573eff4b25b7f5ccf15c71b42
+    m_Address: GameOverView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 603ff7d134a4e4e219588b10012714b0
+    m_Address: Ship
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b8e45a3f51c64b64810624fdac2a1ab
+    m_Address: Cameras
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83234ce119b014776b65cd711ffc825b
+    m_Address: GameplayView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 6141b8e38ef874211af402eaa6f9cdb1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 375804df3eaf24c44bcda3d7612a06e9, type: 2}
+    - {fileID: 11400000, guid: c319a470f0b514c6c99e4676ac91f451, type: 2}

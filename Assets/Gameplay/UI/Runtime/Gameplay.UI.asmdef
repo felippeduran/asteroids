@@ -4,7 +4,8 @@
     "references": [
         "Gameplay.Simulation.Runtime",
         "Company.Utilities.Runtime",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

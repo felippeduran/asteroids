@@ -163,68 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99460a0af02f645e7a5891197af1729c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameConfig:
-    InitialLives: 3
-    WorldSize: {x: 30, y: 30}
-    Ship:
-      ThrustForce: 10
-      TurnSpeed: 130
-      ReviveCooldown: 2
-    Asteroids:
-      Initial: 4
-      ExtraPerWave: 1
-      NextWaveCooldown: 1.5
-      SpawnRange:
-        Min: 13
-        Max: 19
-      SpeedRange:
-        Min: 0.2
-        Max: 5
-      SplitAngle: 180
-      Scores:
-      - Type: 0
-        Score: 100
-      - Type: 1
-        Score: 50
-      - Type: 2
-        Score: 20
-    Bullets:
-      Speed: 25
-      TravelDistance: 15
-    Saucers:
-      Saucers:
-      - Type: 0
-        Movement:
-          Speed: 7
-          TurnChance: 0.8
-          TurnCooldown: 1
-        Aim:
-          FireRate: 1
-          FireAngle: 20
-          SightDistance: 20
-      - Type: 1
-        Movement:
-          Speed: 5
-          TurnChance: 0.5
-          TurnCooldown: 3
-        Aim:
-          FireRate: 0.5
-          FireAngle: 360
-          SightDistance: 20
-      SpawnConfigs:
-      - Type: 0
-        Chance: 0.2
-      - Type: 1
-        Chance: 0.4
-      Scores:
-      - Type: 0
-        Score: 1000
-      - Type: 1
-        Score: 200
-      SpawnCooldown: 5
-  gameplayAssets: {fileID: 11400000, guid: 581e8cd2757fc4d279cd5d45a5b8ebe8, type: 2}
-  gameplayViewLibrary: {fileID: 11400000, guid: fdd044ce265e64575a9e666def037ca1, type: 2}
-  metagameViewLibrary: {fileID: 11400000, guid: e5aa21bbd36dd4d84b0f758312035baa, type: 2}
+  gameConfigAsset: {fileID: 11400000, guid: c34b7e18d94434a62959d67c6064d0b5, type: 2}
+  gameplayAssetLibrary: {fileID: 11400000, guid: 581e8cd2757fc4d279cd5d45a5b8ebe8, type: 2}
+  gameplayUIAssetLibrary: {fileID: 11400000, guid: fdd044ce265e64575a9e666def037ca1, type: 2}
+  metagameAssetLibrary: {fileID: 11400000, guid: e5aa21bbd36dd4d84b0f758312035baa, type: 2}
 --- !u!1 &938205331
 GameObject:
   m_ObjectHideFlags: 0

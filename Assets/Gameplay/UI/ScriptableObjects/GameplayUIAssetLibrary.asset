@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262510376f27d4e6eb1bf64a923c14e4, type: 3}
+  m_Name: GameplayUIAssetLibrary
+  m_EditorClassIdentifier: 
+  camerasAsset:
+    m_AssetGUID: 7b8e45a3f51c64b64810624fdac2a1ab
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  gameplayViewAsset:
+    m_AssetGUID: 83234ce119b014776b65cd711ffc825b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  gameOverViewAsset:
+    m_AssetGUID: 5865cc3573eff4b25b7f5ccf15c71b42
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

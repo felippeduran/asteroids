@@ -1,12 +1,10 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Company.Utilities.Runtime;
 using UnityEngine;
 
 namespace Metagame.UI.Runtime
 {
-    public class MainMenuView : View
+    public class MainMenuView : MonoBehaviour, IMainMenuView
     {
         bool clickedStartGame;
 
@@ -14,6 +12,7 @@ namespace Metagame.UI.Runtime
         {
             while (!ct.IsCancellationRequested && !clickedStartGame)
             {
+                clickedStartGame = false;
                 await Task.Yield();
             }
 
