@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -18,7 +19,7 @@ namespace Gameplay.Simulation.Runtime
 
         public void Dispose()
         {
-            Debug.Log("Disposing gameplay");
+            Logger.Log("Disposing gameplay");
             foreach (var pool in objectPools)
             {
                 pool.Dispose();

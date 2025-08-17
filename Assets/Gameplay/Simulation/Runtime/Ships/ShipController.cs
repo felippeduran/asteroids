@@ -1,5 +1,6 @@
 using UnityEngine;
 using Random = Company.Utilities.Runtime.Random;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -84,7 +85,7 @@ namespace Gameplay.Simulation.Runtime
 
                 if (playerState.ReviveCooldown < 0f)
                 {
-                    Debug.Log("Revive!");
+                    Logger.Log("Revive!");
                     // TODO: Watch out for the ship being destroyed again while reviving
                     playerState.Reviving = false;
                     ReviveShip(ship);
@@ -97,11 +98,11 @@ namespace Gameplay.Simulation.Runtime
 
                 if (!playerState.Reviving && !playerState.GameOver)
                 {
-                    Debug.Log("Ship destroyed");
+                    Logger.Log("Ship destroyed");
                     playerState.Lives--;
                     if (playerState.Lives > 0)
                     {
-                        Debug.Log("Reviving ship");
+                        Logger.Log("Reviving ship");
                         playerState.Reviving = true;
                         playerState.ReviveCooldown = shipConfig.ReviveCooldown;
                     }

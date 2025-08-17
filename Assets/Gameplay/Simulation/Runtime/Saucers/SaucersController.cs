@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = Company.Utilities.Runtime.Random;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -32,7 +33,7 @@ namespace Gameplay.Simulation.Runtime
             saucersState.SpawnCooldown -= deltaTime;
             if (saucersState.SpawnCooldown < 0f)
             {
-                Debug.Log("Try spawning saucers");
+                Logger.Log("Try spawning saucers");
                 saucersState.SpawnCooldown = saucersConfig.SpawnCooldown;
                 foreach (var spawnRate in saucersConfig.SpawnConfigs)
                 {
@@ -54,7 +55,7 @@ namespace Gameplay.Simulation.Runtime
                 var saucerConfig = saucersConfig.Saucers.GetSaucerConfigFor(saucer.Type);
                 if (saucer.ShootCooldown < 0f)
                 {
-                     Debug.Log($"Try shoot {saucer.Type} saucer");
+                     Logger.Log($"Try shoot {saucer.Type} saucer");
                     saucer.ShootCooldown = 1f / saucerConfig.Aim.FireRate;
 
                     var filter = new ContactFilter2D {
@@ -65,7 +66,7 @@ namespace Gameplay.Simulation.Runtime
                     var count = Physics2D.CircleCast(saucer.Position, saucerConfig.Aim.SightDistance, Vector2.one, filter, raycasHits, 0f);
                     if (count > 0)
                     {
-                        Debug.Log($"Found {count} targets");
+                        Logger.Log($"Found {count} targets");
                         var random = new Random();
                         var hit = raycasHits[random.Range(0, count)];
                         var targetPosition = hit.rigidbody.transform.position;
@@ -94,7 +95,7 @@ namespace Gameplay.Simulation.Runtime
                 saucer.TurnCooldown -= deltaTime;
                 if (saucer.TurnCooldown < 0f)
                 {
-                    Debug.Log($"Try turn {saucer.Type} saucer");
+                    Logger.Log($"Try turn {saucer.Type} saucer");
                     var saucerConfig = saucersConfig.Saucers.GetSaucerConfigFor(saucer.Type);
                     saucer.TurnCooldown = saucerConfig.Movement.TurnCooldown;
                     if (random.NextFloat() < saucerConfig.Movement.TurnChance)
@@ -119,12 +120,12 @@ namespace Gameplay.Simulation.Runtime
             {
                 if (saucer.LinearVelocity.x > 0 && saucer.Position.x > worldBounds.max.x)
                 {
-                    Debug.Log($"Saucer {saucer.Type} crossed the screen on the right");
+                    Logger.Log($"Saucer {saucer.Type} crossed the screen on the right");
                     saucersToRemove.Add(saucer);
                 }
                 else if (saucer.LinearVelocity.x < 0 && saucer.Position.x < worldBounds.min.x)
                 {
-                    Debug.Log($"Saucer {saucer.Type} crossed the screen on the left");
+                    Logger.Log($"Saucer {saucer.Type} crossed the screen on the left");
                     saucersToRemove.Add(saucer);
                 }
             }

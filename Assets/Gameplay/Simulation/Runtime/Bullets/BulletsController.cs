@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -52,7 +53,7 @@ namespace Gameplay.Simulation.Runtime
             bullet.TotalTraveledDistance = 0f;
             bullet.Score = 0;
             bullet.IsPlayerBullet = bulletData.IsPlayerBullet;
-            Debug.Log($"Spawned bullet at {bullet.Position} with velocity {bullet.LinearVelocity}, forward {bulletData.Forward}");
+            Logger.Log($"Spawned bullet at {bullet.Position} with velocity {bullet.LinearVelocity}, forward {bulletData.Forward}");
 
             return bullet;
         }

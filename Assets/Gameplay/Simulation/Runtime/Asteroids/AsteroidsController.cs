@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = Company.Utilities.Runtime.Random;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -27,7 +28,7 @@ namespace Gameplay.Simulation.Runtime
                 waveState.NextWaveCooldown -= deltaTime;
                 if (waveState.NextWaveCooldown < 0f)
                 {
-                    Debug.Log("Next wave!");
+                    Logger.Log("Next wave!");
                     waveState.NextWave = false;
                     waveState.Current++;
                     var numberOfAsteroids = asteroidsConfig.Initial + (waveState.Current - 1) * asteroidsConfig.ExtraPerWave;
@@ -48,7 +49,7 @@ namespace Gameplay.Simulation.Runtime
         {
             if (existingSaucers.Count == 0 && existingAsteroids.Count == 0 && !waveState.NextWave)
             {
-                Debug.Log("Schedule next wave");
+                Logger.Log("Schedule next wave");
                 waveState.NextWave = true;
                 waveState.NextWaveCooldown = asteroidsConfig.NextWaveCooldown;
             }

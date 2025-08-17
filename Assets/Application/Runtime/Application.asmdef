@@ -4,7 +4,8 @@
     "references": [
         "Gameplay.Simulation.Runtime",
         "Gameplay.UI.Runtime",
-        "Metagame.UI.Runtime"
+        "Metagame.UI.Runtime",
+        "Company.Utilities.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

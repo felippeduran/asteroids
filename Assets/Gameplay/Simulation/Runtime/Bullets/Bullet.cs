@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using Logger = Company.Utilities.Runtime.Logger;
 
 [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
 public class Bullet : MonoBehaviour, IPoolable
@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour, IPoolable
         // for duplicate scoring instead of trying to track the order of the callbacks on both ends(this and the
         // other object).
         // Example: Consider 2 asteroids (B and C) colliding with this bullet A. All of them implement OnTriggerEnter. In the same frame, we have a trigger event between A and B, and A and C.
-        Debug.Log($"Bullet collided with {other.attachedRigidbody.name}");
+        Logger.Log("Bullet collided with {0}", other.attachedRigidbody.name);
         if (other.attachedRigidbody.TryGetComponent<ScoreWorth>(out var scoreWorth))
         {
             Score += scoreWorth.Amount;
