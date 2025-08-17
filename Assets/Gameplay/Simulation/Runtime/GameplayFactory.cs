@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,20 +42,23 @@ namespace Gameplay.Simulation.Runtime
             var bulletsPool = new ObjectPool<Bullet>(assets.BulletPrefab);
             var saucersPool = new ObjectPool<Saucer>(assets.SaucerPrefab);
 
-        var gameSystems = new GameSystems
-        {
-            ShipController = new ShipController(inputProvider),
-            BulletsController = new BulletsController(bulletsPool),
-            SaucersController = new SaucersController(saucersPool),
-            AsteroidsController = new AsteroidsController(asteroidsPool),
-            WorldLoopController = new WorldLoopController()
-        };
+            var gameSystems = new GameSystems
+            {
+                ShipController = new ShipController(inputProvider),
+                BulletsController = new BulletsController(bulletsPool),
+                SaucersController = new SaucersController(saucersPool),
+                AsteroidsController = new AsteroidsController(asteroidsPool),
+                WorldLoopController = new WorldLoopController()
+            };
 
-        cameraGroup.SetWorldSize(gameConfig.WorldSize);
+            cameraGroup.SetWorldSize(gameConfig.WorldSize);
 
-        var gameLoopObject = new GameObject("GameLoop");
-        var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
-        bootstrap.Setup(gameState, gameConfig, gameSystems);
+            var gameLoopObject = new GameObject("GameLoop");
+            var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
+
+            var gameplayDisposer = new GameplayDisposer(playerShip, gameLoopObject, new IDisposable[] { asteroidsPool, bulletsPool, saucersPool });
+
+            bootstrap.Setup(gameState, gameConfig, gameSystems, gameplayDisposer);
 
             return bootstrap;
         }

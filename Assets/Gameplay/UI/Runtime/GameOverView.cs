@@ -1,11 +1,21 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Gameplay.UI.Runtime
 {
     public class GameOverView : MonoBehaviour
     {
-        public event Action OnExitGame = delegate { };
+        bool exit = false;
+
+        public async Task WaitForCompletionAsync(CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested && !exit)
+            {
+                await Task.Yield();
+            }
+        }
 
         void Update()
         {
@@ -17,7 +27,7 @@ namespace Gameplay.UI.Runtime
 
         public void ExitGame()
         {
-            OnExitGame.Invoke();
+            exit = true;
         }
     }
 }

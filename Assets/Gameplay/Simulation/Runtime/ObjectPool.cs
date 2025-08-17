@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,29 +8,32 @@ public interface IPoolable
     void Enable();
 }
 
-public class ObjectPool<T> where T : MonoBehaviour, IPoolable
+public class ObjectPool<T> : IDisposable where T : MonoBehaviour, IPoolable
 {
     readonly T prefab;
-    readonly List<T> pool;
+    readonly List<T> available;
+    readonly List<T> inUse;
 
     public ObjectPool(T prefab)
     {
         this.prefab = prefab;
-        pool = new List<T>();
+        available = new List<T>();
+        inUse = new List<T>();
     }
 
     public T Get()
     {
         T obj;
-        if (pool.Count > 0)
+        if (available.Count > 0)
         {
-            var lastIndex = pool.Count - 1;
-            obj = pool[lastIndex];
-            pool.RemoveAt(lastIndex);
+            var lastIndex = available.Count - 1;
+            obj = available[lastIndex];
+            available.RemoveAt(lastIndex);
         }
         else
         {
             obj = GameObject.Instantiate(prefab);
+            inUse.Add(obj);
         }
 
         obj.Enable();
@@ -40,6 +44,19 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolable
     public void Add(T obj)
     {
         obj.Disable();
-        pool.Add(obj);
+        available.Add(obj);
+    }
+
+    public void Dispose()
+    {
+        foreach (var obj in available)
+        {
+            GameObject.Destroy(obj.gameObject);
+        }
+
+        foreach (var obj in inUse)
+        {
+            GameObject.Destroy(obj.gameObject);
+        }
     }
 }

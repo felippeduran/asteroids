@@ -223,6 +223,8 @@ MonoBehaviour:
         Score: 200
       SpawnCooldown: 5
   gameplayAssets: {fileID: 11400000, guid: 581e8cd2757fc4d279cd5d45a5b8ebe8, type: 2}
+  gameplayViewLibrary: {fileID: 11400000, guid: fdd044ce265e64575a9e666def037ca1, type: 2}
+  metagameViewLibrary: {fileID: 11400000, guid: e5aa21bbd36dd4d84b0f758312035baa, type: 2}
 --- !u!1 &938205331
 GameObject:
   m_ObjectHideFlags: 0

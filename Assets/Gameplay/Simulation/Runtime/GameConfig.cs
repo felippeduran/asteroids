@@ -10,6 +10,7 @@ public struct GameConfig
     public AsteroidsConfig Asteroids;
     public BulletsConfig Bullets;
     public SaucersConfig Saucers;
+    public readonly Bounds WorldBounds => new Bounds(Vector2.zero, WorldSize);
 }
 
 [Serializable]

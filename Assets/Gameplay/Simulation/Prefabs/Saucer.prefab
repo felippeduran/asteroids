@@ -191,9 +191,9 @@ GameObject:
   - component: {fileID: 5673236148728166539}
   - component: {fileID: 1956183316061865210}
   - component: {fileID: 1531724108109302878}
+  - component: {fileID: 285788081410176955}
   - component: {fileID: -5944803166371631463}
   - component: {fileID: 1245189824471065487}
-  - component: {fileID: 285788081410176955}
   m_Layer: 8
   m_Name: Saucer
   m_TagString: Untagged
@@ -253,6 +253,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3858349888bb44f2bc4b321c84efe01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &285788081410176955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2825173865788963799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4e7b0435896422b8a8b18085569d37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-5944803166371631463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,18 +310,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &285788081410176955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2825173865788963799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e4e7b0435896422b8a8b18085569d37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3100477835569794707
 GameObject:
   m_ObjectHideFlags: 0

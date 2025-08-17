@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 public struct GameSystems
 {
@@ -12,7 +14,7 @@ public struct GameSystems
     public WorldLoopController WorldLoopController;
 }
 
-public class GameplayBootstrap : MonoBehaviour
+public class GameplayBootstrap : MonoBehaviour, IDisposable
 {
     public event Action<GameState> OnUpdate = delegate { };
 
@@ -20,25 +22,38 @@ public class GameplayBootstrap : MonoBehaviour
     [SerializeField] GameState gameState;
 
     GameSystems gameSystems;
+    GameplayDisposer gameplayDisposer;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, GameSystems gameSystems)
+    public void Setup(GameState gameState, GameConfig gameConfig, GameSystems gameSystems, GameplayDisposer gameplayDisposer)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
         this.gameSystems = gameSystems;
+        this.gameplayDisposer = gameplayDisposer;
+    }
+
+    public async Task WaitForCompletionAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested && !gameState.PlayerState.GameOver)
+        {
+            await Task.Yield();
+        }
+    }
+
+    public void Dispose()
+    {
+        gameplayDisposer.Dispose();
     }
 
     void Update()
     {
-        var worldBounds = new Bounds(Vector2.zero, gameConfig.WorldSize);
-
-        var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, worldBounds);
-        var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, worldBounds);
+        var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, gameConfig.WorldBounds);
+        var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, gameConfig.WorldBounds);
         bulletsFired = bulletsFired.Concat(moreBulletsFired).ToArray();
         gameSystems.BulletsController.UpdateBullets(Time.deltaTime, bulletsFired, ref gameState.PlayerState, gameState.Bullets, gameConfig.Bullets);
 
-        gameSystems.AsteroidsController.UpdateAsteroids(Time.deltaTime, ref gameState.WaveState, gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameConfig.Asteroids, worldBounds);
-        gameSystems.WorldLoopController.LoopObjectsThroughWorld(gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameState.Bullets, worldBounds);
+        gameSystems.AsteroidsController.UpdateAsteroids(Time.deltaTime, ref gameState.WaveState, gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameConfig.Asteroids, gameConfig.WorldBounds);
+        gameSystems.WorldLoopController.LoopObjectsThroughWorld(gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameState.Bullets, gameConfig.WorldBounds);
 
 
         OnUpdate(gameState);
@@ -51,6 +66,9 @@ public class GameplayBootstrap : MonoBehaviour
             Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.Asteroids.SpawnRange.Min);
             Gizmos.DrawWireSphere(gameState.PlayerShip.Position, gameConfig.Asteroids.SpawnRange.Max);
         }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(Vector3.zero, gameConfig.WorldSize);
     }
 
 

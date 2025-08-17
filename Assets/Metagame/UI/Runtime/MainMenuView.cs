@@ -1,20 +1,33 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class MainMenuView : MonoBehaviour
+namespace Metagame.UI.Runtime
 {
-    public event Action OnStartGame = delegate { };
-
-    void Update()
+    public class MainMenuView : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool clickedStartGame;
+
+        public async Task WaitForCompletionAsync(CancellationToken ct)
         {
-            StartGame();
+            while (!ct.IsCancellationRequested && !clickedStartGame)
+            {
+                await Task.Yield();
+            }
         }
-    }
 
-    public void StartGame()
-    {
-        OnStartGame.Invoke();
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartGame();
+            }
+        }
+
+        public void StartGame()
+        {
+            clickedStartGame = true;
+        }
     }
 }

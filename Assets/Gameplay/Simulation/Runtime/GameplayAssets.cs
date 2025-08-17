@@ -9,6 +9,5 @@ namespace Gameplay.Simulation.Runtime
         public Asteroid AsteroidPrefab;
         public Bullet BulletPrefab;
         public Saucer SaucerPrefab;
-        public CameraGroup Cameras;
     }
 }

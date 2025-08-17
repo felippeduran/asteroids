@@ -56,8 +56,6 @@ MonoBehaviour:
   scoreText: {fileID: 829365558841678064}
   livesRoot: {fileID: 7644192989498069745}
   lives: []
-  gameOverView: {fileID: 0}
-  hudView: {fileID: 0}
 --- !u!223 &1520133604174852942
 Canvas:
   m_ObjectHideFlags: 0
@@ -76,7 +74,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
