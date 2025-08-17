@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5ee2a5bda73456d8e57ee9cdb85e9f, type: 3}
   m_Name: MetagameViewLibrary
   m_EditorClassIdentifier: 
-  MainMenuViewPrefab: {fileID: 5154130126054472235, guid: 35584bba2f86042ccae20687621447d9, type: 3}
+  mainMenuViewPrefab: {fileID: 5154130126054472235, guid: 35584bba2f86042ccae20687621447d9, type: 3}

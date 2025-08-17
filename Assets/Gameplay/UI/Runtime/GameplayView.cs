@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Company.Utilities.Runtime;
 
 namespace Gameplay.UI.Runtime
 {
-    public class GameplayView : MonoBehaviour
+    public class GameplayView : View
     {
         [SerializeField] GameObject lifePrefab;
         [SerializeField] TMP_Text scoreText;

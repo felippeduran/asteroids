@@ -1,7 +1,9 @@
 {
     "name": "Metagame.UI.Runtime",
     "rootNamespace": "Metagame.UI.Runtime",
-    "references": [],
+    "references": [
+        "Company.Utilities.Runtime"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

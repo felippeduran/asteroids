@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class CameraGroup : MonoBehaviour, ICameraGroup
+public class CameraGroup : MonoBehaviour, ICameraGroup, IDisposable
 {
     [SerializeField] private Camera Center;
     [SerializeField] private Camera Top;
@@ -22,7 +23,12 @@ public class CameraGroup : MonoBehaviour, ICameraGroup
         }
     }
 
-    private Vector2 GetWorldSize()
+    public void Dispose()
+    {
+        Destroy(gameObject);
+    }
+
+    Vector2 GetWorldSize()
     {
         float height = Center.orthographicSize * 2f;
         float width = height * Center.aspect;

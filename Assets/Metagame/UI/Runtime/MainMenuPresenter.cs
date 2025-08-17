@@ -6,20 +6,18 @@ namespace Metagame.UI.Runtime
 {
     public class MainMenuPresenter
     {
-        readonly MetagameViewLibrary mainMenuViewLibrary;
+        readonly MetagameViewLibrary metagameViewLibrary;
 
-        public MainMenuPresenter(MetagameViewLibrary mainMenuViewLibrary)
+        public MainMenuPresenter(MetagameViewLibrary metagameViewLibrary)
         {
-            this.mainMenuViewLibrary = mainMenuViewLibrary;
+            this.metagameViewLibrary = metagameViewLibrary;
         }
 
-        public async Task PresentAsync(CancellationToken ct)
+        public async Task<bool> PresentAsync(CancellationToken ct)
         {
-            var mainMenuView = GameObject.Instantiate(mainMenuViewLibrary.MainMenuViewPrefab);
+            using var mainMenuView = metagameViewLibrary.CreateMainMenuView();
 
-            await mainMenuView.WaitForCompletionAsync(ct);
-
-            GameObject.Destroy(mainMenuView.gameObject);
+            return await mainMenuView.WaitForCompletionAsync(ct);
         }
     }
 }

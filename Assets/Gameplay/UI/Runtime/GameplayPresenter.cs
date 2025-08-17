@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Gameplay.Simulation.Runtime;
-using UnityEngine;
 
 namespace Gameplay.UI.Runtime
 {
@@ -18,21 +17,17 @@ namespace Gameplay.UI.Runtime
 
         public async Task PresentAsync(CancellationToken ct)
         {
-            var cameras = GameObject.Instantiate<CameraGroup>(gameplayViewLibrary.Cameras);
-            var gameplayView = GameObject.Instantiate<GameplayView>(gameplayViewLibrary.GameplayViewPrefab);
+            using var cameras = gameplayViewLibrary.CreateCameraGroup();
             var inputProvider = new KeyboardInputProvider();
-
             using GameplayBootstrap gameplay = gameplayFactory.Create(inputProvider, cameras);
 
-            await gameplay.WaitForCompletionAsync(ct);
+            using (var gameplayView = gameplayViewLibrary.CreateGameplayView())
+            {
+                await gameplay.WaitForCompletionAsync(ct);
+            }
 
-            GameObject.Destroy(gameplayView.gameObject);
-
-            var gameOverView = GameObject.Instantiate<GameOverView>(gameplayViewLibrary.GameOverViewPrefab);
+            using var gameOverView = gameplayViewLibrary.CreateGameOverView();
             await gameOverView.WaitForCompletionAsync(ct);
-
-            GameObject.Destroy(gameOverView.gameObject);
-            GameObject.Destroy(cameras.gameObject);
         }
     }
 }

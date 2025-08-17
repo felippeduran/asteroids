@@ -28,11 +28,13 @@ namespace Application.Runtime
             while (!exitToken.IsCancellationRequested)
             {
                 var mainMenuPresenter = new MainMenuPresenter(metagameViewLibrary);
-                await mainMenuPresenter.PresentAsync(exitToken);
+                var play = await mainMenuPresenter.PresentAsync(exitToken);
+                if (play)
+                {
+                    var gameplayFactory = new GameplayFactory(gameplayAssets, gameConfig);
 
-                var gameplayFactory = new GameplayFactory(gameplayAssets, gameConfig);
-
-                await new GameplayPresenter(gameplayViewLibrary, gameplayFactory).PresentAsync(exitToken);
+                    await new GameplayPresenter(gameplayViewLibrary, gameplayFactory).PresentAsync(exitToken);
+                }
             }
         }
     }
