@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class CameraGroup : MonoBehaviour
+public class CameraGroup : MonoBehaviour, ICameraGroup
 {
     [SerializeField] private Camera Center;
     [SerializeField] private Camera Top;
@@ -10,8 +10,19 @@ public class CameraGroup : MonoBehaviour
     [SerializeField] private Camera Right;
 
     Vector2 lastScreenSize;
+    
+    Camera[] AllCameras => new Camera[] { Center, Top, Bottom, Left, Right };
 
-    public Vector2 GetWorldSize()
+    public void SetWorldSize(Vector2 worldSize)
+    {
+        foreach (var camera in AllCameras)
+        {
+            camera.orthographicSize = worldSize.y / 2f;
+            camera.aspect = worldSize.x / worldSize.y;
+        }
+    }
+
+    private Vector2 GetWorldSize()
     {
         float height = Center.orthographicSize * 2f;
         float width = height * Center.aspect;

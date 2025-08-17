@@ -17,22 +17,20 @@ public class GameplayBootstrap : MonoBehaviour
     public event Action<GameState> OnUpdate = delegate { };
 
     [SerializeField] GameConfig gameConfig;
-    [SerializeField] CameraGroup cameras;
     [SerializeField] GameState gameState;
 
     GameSystems gameSystems;
 
-    public void Setup(GameState gameState, GameConfig gameConfig, CameraGroup cameras, GameSystems gameSystems)
+    public void Setup(GameState gameState, GameConfig gameConfig, GameSystems gameSystems)
     {
         this.gameState = gameState;
         this.gameConfig = gameConfig;
-        this.cameras = cameras;
         this.gameSystems = gameSystems;
     }
 
     void Update()
     {
-        var worldBounds = new Bounds(Vector2.zero, cameras.GetWorldSize());
+        var worldBounds = new Bounds(Vector2.zero, gameConfig.WorldSize);
 
         var bulletsFired = gameSystems.ShipController.UpdateShip(Time.deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, worldBounds);
         var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(Time.deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, worldBounds);

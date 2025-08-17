@@ -1,9 +1,11 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public struct GameConfig
 {
     public int InitialLives;
+    public Vector2 WorldSize;
     public ShipConfig Ship;
     public AsteroidsConfig Asteroids;
     public BulletsConfig Bullets;

@@ -14,7 +14,7 @@ namespace Gameplay.Simulation.Runtime
             this.gameConfig = gameConfig;
         }
 
-        public GameplayBootstrap Create(IInputProvider inputProvider)
+        public GameplayBootstrap Create(IInputProvider inputProvider, ICameraGroup cameraGroup)
         {
             var playerShip = GameObject.Instantiate<Ship>(assets.ShipPrefab);
             playerShip.Position = new Vector2(0, 0);
@@ -41,8 +41,6 @@ namespace Gameplay.Simulation.Runtime
             var bulletsPool = new ObjectPool<Bullet>(assets.BulletPrefab);
             var saucersPool = new ObjectPool<Saucer>(assets.SaucerPrefab);
 
-        var cameras = GameObject.Instantiate<CameraGroup>(assets.Cameras);
-
         var gameSystems = new GameSystems
         {
             ShipController = new ShipController(inputProvider),
@@ -52,9 +50,11 @@ namespace Gameplay.Simulation.Runtime
             WorldLoopController = new WorldLoopController()
         };
 
+        cameraGroup.SetWorldSize(gameConfig.WorldSize);
+
         var gameLoopObject = new GameObject("GameLoop");
         var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
-        bootstrap.Setup(gameState, gameConfig, cameras, gameSystems);
+        bootstrap.Setup(gameState, gameConfig, gameSystems);
 
             return bootstrap;
         }

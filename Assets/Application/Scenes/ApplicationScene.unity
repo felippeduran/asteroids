@@ -165,9 +165,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameConfig:
     InitialLives: 3
+    WorldSize: {x: 30, y: 30}
     Ship:
-      ThrustForce: 6
-      TurnSpeed: 100
+      ThrustForce: 10
+      TurnSpeed: 130
       ReviveCooldown: 2
     Asteroids:
       Initial: 4
