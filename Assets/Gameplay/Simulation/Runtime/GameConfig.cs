@@ -4,8 +4,8 @@ using UnityEngine;
 [Serializable]
 public struct GameConfig
 {
-    public int InitialLives;
     public Vector2 WorldSize;
+    public LivesConfig Lives;
     public ShipConfig Ship;
     public AsteroidsConfig Asteroids;
     public BulletsConfig Bullets;

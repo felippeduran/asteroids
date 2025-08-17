@@ -86,7 +86,8 @@ namespace Gameplay.Simulation.Runtime
                 if (playerState.ReviveCooldown < 0f)
                 {
                     Logger.Log("Revive!");
-                    // TODO: Watch out for the ship being destroyed again while reviving
+                    // Note: In the original, the ship could be destroyed again while reviving if there was an asteroid/saucer in the way.
+                    // Therefore we can also accept this to simplify things.
                     playerState.Reviving = false;
                     ReviveShip(ship);
                 }

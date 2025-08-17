@@ -7,6 +7,6 @@ public class ShipVisual : MonoBehaviour
 
     public void Update()
     {
-        propulsionVisual.SetActive(ship.IsThrusting ? UnityEngine.Random.value > 0.7f : false);
+        propulsionVisual.SetActive(ship.IsThrusting ? UnityEngine.Random.value < 0.7f : false);
     }
 }

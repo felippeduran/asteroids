@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: GameConfigAsset
   m_EditorClassIdentifier: 
   GameConfig:
-    InitialLives: 3
     WorldSize: {x: 30, y: 30}
+    Lives:
+      InitialLives: 3
+      ScoreForExtraLife: 10000
     Ship:
       ThrustForce: 10
       TurnSpeed: 130

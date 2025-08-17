@@ -1,11 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using TMPro;
 
 namespace Gameplay.UI.Runtime
 {
     public class GameOverView : MonoBehaviour, IGameOverView
     {
+        [SerializeField] TMP_Text scoreText;
+
         bool exit = false;
 
         public async Task WaitForCompletionAsync(CancellationToken ct)
@@ -14,6 +17,11 @@ namespace Gameplay.UI.Runtime
             {
                 await Task.Yield();
             }
+        }
+
+        public void Setup(int score)
+        {
+            scoreText.text = score.ToString();
         }
 
         void Update()

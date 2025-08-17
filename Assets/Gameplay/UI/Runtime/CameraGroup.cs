@@ -11,7 +11,7 @@ public class CameraGroup : MonoBehaviour, ICameraGroup, IDisposable
     [SerializeField] private Camera Right;
 
     Vector2 lastScreenSize;
-    
+
     Camera[] AllCameras => new Camera[] { Center, Top, Bottom, Left, Right };
 
     public void SetWorldSize(Vector2 worldSize)
@@ -21,6 +21,7 @@ public class CameraGroup : MonoBehaviour, ICameraGroup, IDisposable
             camera.orthographicSize = worldSize.y / 2f;
             camera.aspect = worldSize.x / worldSize.y;
         }
+        UpdateCameraPositions(worldSize);
     }
 
     public void Dispose()
@@ -51,6 +52,11 @@ public class CameraGroup : MonoBehaviour, ICameraGroup, IDisposable
         }
 
         var worldSize = GetWorldSize();
+        UpdateCameraPositions(worldSize);
+    }
+    
+    void UpdateCameraPositions(Vector2 worldSize)
+    {
         Top.transform.position = Center.transform.position + new Vector3(0, worldSize.y, 0);
         Bottom.transform.position = Center.transform.position + new Vector3(0, -worldSize.y, 0);
         Left.transform.position = Center.transform.position + new Vector3(-worldSize.x, 0, 0);

@@ -17,7 +17,7 @@ public class AsteroidVisual : MonoBehaviour
 
     AsteroidType currentActiveType;
 
-    void Update()
+    void LateUpdate()
     {
         if (currentActiveType != asteroid.Type)
         {

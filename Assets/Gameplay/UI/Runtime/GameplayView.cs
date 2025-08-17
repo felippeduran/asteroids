@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.UI.Runtime
 {
@@ -31,6 +32,7 @@ namespace Gameplay.UI.Runtime
             for (int i = 0; i < livesToRemove; i++)
             {
                 Destroy(lives[i].gameObject);
+                lives.RemoveAt(i);
             }
         }
     }

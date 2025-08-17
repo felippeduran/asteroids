@@ -34,7 +34,8 @@ namespace Gameplay.Simulation.Runtime
                 PlayerState = new PlayerState
                 {
                     Score = 0,
-                    Lives = gameConfig.InitialLives,
+                    Lives = gameConfig.Lives.InitialLives,
+                    NextLifeScore = gameConfig.Lives.ScoreForExtraLife,
                 },
                 SaucersState = new SaucersState { SpawnCooldown = gameConfig.Saucers.SpawnCooldown },
                 PlayerShip = playerShip,
@@ -53,13 +54,14 @@ namespace Gameplay.Simulation.Runtime
                 BulletsController = new BulletsController(bulletsPool),
                 SaucersController = new SaucersController(saucersPool),
                 AsteroidsController = new AsteroidsController(asteroidsPool),
-                WorldLoopController = new WorldLoopController()
+                WorldLoopController = new WorldLoopController(),
+                ExtraLifeController = new ExtraLifeController()
             };
 
             cameraGroup.SetWorldSize(gameConfig.WorldSize);
 
             var gameLoopObject = new GameObject("GameLoop");
-            var bootstrap = gameLoopObject.AddComponent<GameplayBootstrap>();
+            var bootstrap = gameLoopObject.AddComponent<GameplayLoop>();
 
             var disposer = new BatchDisposer(
                 asteroidsPool,

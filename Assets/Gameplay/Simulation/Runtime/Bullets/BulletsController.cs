@@ -23,25 +23,43 @@ namespace Gameplay.Simulation.Runtime
 
         public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref PlayerState playerState, List<Bullet> existingBullets, BulletsConfig bulletsConfig)
         {
-            foreach (var bulletData in bulletsFired)
-            {
-                var bullet = SpawnBullet(bulletData, bulletsConfig);
-                existingBullets.Add(bullet);
-            }
+            var bullets = SpawnBullets(bulletsFired, bulletsConfig);
+            existingBullets.AddRange(bullets);
 
-            foreach (var bullet in existingBullets)
-            {
-                if (!bullet.IsDestroyed)
-                {
-                    bullet.TotalTraveledDistance += bullet.LinearVelocity.magnitude * deltaTime;
-                    if (bullet.TotalTraveledDistance > bulletsConfig.TravelDistance)
-                    {
-                        bullet.IsDestroyed = true;
-                    }
-                }
-            }
+            UpdateTraveledBullets(deltaTime, existingBullets, bulletsConfig);
+            ExpireTraveledBullets(existingBullets, bulletsConfig);
 
             HandleDestroyedBullets(ref playerState, existingBullets);
+        }
+
+        Bullet[] SpawnBullets(FireBulletData[] bulletsFired, BulletsConfig bulletsConfig)
+        {
+            var bullets = new Bullet[bulletsFired.Length];
+            for (int i = 0; i < bulletsFired.Length; i++)
+            {
+                bullets[i] = SpawnBullet(bulletsFired[i], bulletsConfig);
+            }
+
+            return bullets;
+        }
+
+        void UpdateTraveledBullets(float deltaTime, List<Bullet> existingBullets, BulletsConfig bulletsConfig)
+        {
+            foreach (var bullet in existingBullets)
+            {
+                bullet.TotalTraveledDistance += bullet.LinearVelocity.magnitude * deltaTime;
+            }
+        }
+
+        void ExpireTraveledBullets(List<Bullet> existingBullets, BulletsConfig bulletsConfig)
+        {
+            foreach (var bullet in existingBullets)
+            {
+                if (bullet.TotalTraveledDistance > bulletsConfig.TravelDistance)
+                {
+                    bullet.IsDestroyed = true;
+                }
+            }
         }
 
         Bullet SpawnBullet(FireBulletData bulletData, BulletsConfig bulletsConfig)
@@ -66,7 +84,10 @@ namespace Gameplay.Simulation.Runtime
             {
                 if (bullet.IsDestroyed)
                 {
-                    playerState.Score += bullet.Score;
+                    if (bullet.IsPlayerBullet && !playerState.GameOver)
+                    {
+                        playerState.Score += bullet.Score;
+                    }
                     bulletsToRemove.Add(bullet);
                 }
             }
