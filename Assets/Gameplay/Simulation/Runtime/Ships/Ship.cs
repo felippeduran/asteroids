@@ -11,6 +11,11 @@ public interface IShip : IPoolable
     float AngularVelocity { get; set; }
     bool IsThrusting { get; }
     Vector2 BulletSpawnPosition { get; }
+    int Ammo { get; set; }
+    float AmmoReloadCooldown { get; set; }
+    float FireCooldown { get; set; }
+    bool IsTeleporting { get; set; }
+    float TeleportCooldown { get; set; }
 }
 
 [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
@@ -27,6 +32,11 @@ public class Ship : MonoBehaviour, IShip, IPoolable
     public bool IsTeamPlayer { get => team.IsTeamPlayer; set => team.IsTeamPlayer = value; }
     public Vector2 ThrustForce { get => rigidbody.totalForce; set => rigidbody.totalForce = value; }
     public float AngularVelocity { get => rigidbody.angularVelocity; set => rigidbody.angularVelocity = value; }
+    public int Ammo { get; set; }
+    public float AmmoReloadCooldown { get; set; }
+    public float FireCooldown { get; set; }
+    public bool IsTeleporting { get; set; }
+    public float TeleportCooldown { get; set; }
 
     public bool IsThrusting { get => rigidbody.totalForce.magnitude > Mathf.Epsilon; }
     public Vector2 BulletSpawnPosition { get => bulletSpawnPoint.position; }

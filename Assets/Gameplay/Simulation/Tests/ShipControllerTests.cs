@@ -336,6 +336,11 @@ namespace Gameplay.Simulation.Tests
             public float AngularVelocity { get; set; }
             public bool IsThrusting => ThrustForce.magnitude > Mathf.Epsilon;
             public Vector2 BulletSpawnPosition => Position + Forward;
+            public int Ammo { get; set; }
+            public float AmmoReloadCooldown { get; set; }
+            public float FireCooldown { get; set; }
+            public bool IsTeleporting { get; set; }
+            public float TeleportCooldown { get; set; }
             public bool IsActive { get; set; } = true;
 
             public void Disable()

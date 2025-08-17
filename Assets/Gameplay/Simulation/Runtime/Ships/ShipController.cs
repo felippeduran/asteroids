@@ -1,6 +1,7 @@
 using UnityEngine;
 using Random = Company.Utilities.Runtime.Random;
 using Logger = Company.Utilities.Runtime.Logger;
+using System;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -22,6 +23,10 @@ namespace Gameplay.Simulation.Runtime
             {
                 bulletsFired = HandleShipInput(inputProvider.GetPlayerInput(), ship, worldBounds, shipConfig);
             }
+
+            HandleShipFireCooldown(deltaTime, ship);
+            HandleShipReloadAmmo(deltaTime, ship, shipConfig);
+            HandleShipTeleportCooldown(deltaTime, ship, worldBounds);
 
             HandleDestroyedShip(deltaTime, ship, ref playerState, shipConfig);
             return bulletsFired;
@@ -48,13 +53,19 @@ namespace Gameplay.Simulation.Runtime
 
             if (input.Fire)
             {
-                fireBulletData = new FireBulletData[] { CreateFireBulletData(ship) };
+                if (ship.Ammo > 0 && ship.FireCooldown <= 0)
+                {
+                    ship.Ammo--;
+                    ship.FireCooldown = 1f / shipConfig.FireRate;
+                    fireBulletData = new FireBulletData[] { CreateFireBulletData(ship) };
+                }
             }
 
             if (input.Teleport)
             {
-                // TODO: Add a teleport delay
-                ship.Position = GetRandomPositionInsideBounds(worldBounds);
+                ship.IsTeleporting = true;
+                ship.TeleportCooldown = shipConfig.TeleportTime;
+                ship.Disable();
             }
 
             return fireBulletData;
@@ -77,6 +88,35 @@ namespace Gameplay.Simulation.Runtime
             };
         }
 
+        void HandleShipTeleportCooldown(float deltaTime, IShip ship, Bounds worldBounds)
+        {
+            if (ship.IsTeleporting)
+            {
+                ship.TeleportCooldown = Math.Max(0f, ship.TeleportCooldown - deltaTime);
+                if (ship.TeleportCooldown <= 0)
+                {
+                    ship.IsTeleporting = false;
+                    ship.Position = GetRandomPositionInsideBounds(worldBounds);
+                    ship.Enable();
+                }
+            }
+        }
+
+        void HandleShipFireCooldown(float deltaTime, IShip ship)
+        {
+            ship.FireCooldown = Math.Max(0f, ship.FireCooldown - deltaTime);
+        }
+
+        void HandleShipReloadAmmo(float deltaTime, IShip ship, ShipConfig shipConfig)
+        {
+            ship.AmmoReloadCooldown = Math.Max(0f, ship.AmmoReloadCooldown - deltaTime);
+            if (ship.AmmoReloadCooldown <= 0)
+            {
+                ship.Ammo = Math.Min(ship.Ammo + 1, shipConfig.MaxAmmo);
+                ship.AmmoReloadCooldown = 1f / shipConfig.AmmoReloadRate;
+            }
+        }
+
         void HandleDestroyedShip(float deltaTime, IShip ship, ref PlayerState playerState, ShipConfig shipConfig)
         {
             if (playerState.Reviving)
@@ -89,7 +129,7 @@ namespace Gameplay.Simulation.Runtime
                     // Note: In the original, the ship could be destroyed again while reviving if there was an asteroid/saucer in the way.
                     // Therefore we can also accept this to simplify things.
                     playerState.Reviving = false;
-                    ReviveShip(ship);
+                    ReviveShip(ship, shipConfig);
                 }
             }
 
@@ -111,10 +151,13 @@ namespace Gameplay.Simulation.Runtime
             }
         }
         
-        void ReviveShip(IShip ship)
+        void ReviveShip(IShip ship, ShipConfig shipConfig)
         {
             ship.Position = new Vector2(0, 0);
             ship.Forward = Vector2.up;
+            ship.Ammo = shipConfig.MaxAmmo;
+            ship.AmmoReloadCooldown = 0f;
+            ship.FireCooldown = 0f;
             ship.IsDestroyed = false;
             ship.Enable();
         }

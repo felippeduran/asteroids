@@ -21,6 +21,10 @@ MonoBehaviour:
       ThrustForce: 10
       TurnSpeed: 130
       ReviveCooldown: 2
+      MaxAmmo: 3
+      AmmoReloadRate: 4
+      FireRate: 12
+      TeleportTime: 0.5
     Asteroids:
       Initial: 4
       ExtraPerWave: 1

@@ -26,6 +26,7 @@ namespace Gameplay.Simulation.Runtime
             playerShip.Position = new Vector2(0, 0);
             playerShip.IsTeamPlayer = true;
             playerShip.IsDestroyed = false;
+            playerShip.Ammo = gameConfig.Ship.MaxAmmo;
             playerShip.Enable();
 
             var gameState = new GameState
