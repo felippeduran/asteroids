@@ -9,7 +9,7 @@
       },
       "hash": "38fecf55e4fd94ccfe58a92ed8ad1a529ba1694e"
     },
-    "com.company.coroutines": {
+    "com.company.utilities": {
       "version": "file:com.company.utilities",
       "depth": 0,
       "source": "embedded",
