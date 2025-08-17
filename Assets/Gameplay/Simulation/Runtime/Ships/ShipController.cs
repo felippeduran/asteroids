@@ -1,4 +1,5 @@
 using UnityEngine;
+using Random = Company.Utilities.Runtime.Random;
 
 namespace Gameplay.Simulation.Runtime
 {

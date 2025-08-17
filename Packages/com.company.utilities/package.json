@@ -1,0 +1,13 @@
+{
+  "name": "com.company.coroutines",
+  "version": "0.0.0",
+  "displayName": "Utilities",
+  "description": "Unity Utilities",
+  "unity": "6000.0",
+  "license": "Copyright",
+  "author": {
+    "name": "Company"
+  },
+  "dependencies": {},
+  "samples": []
+}

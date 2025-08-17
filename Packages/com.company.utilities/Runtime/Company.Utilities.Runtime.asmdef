@@ -1,13 +1,11 @@
 {
-    "name": "Gameplay.Simulation.Runtime",
-    "rootNamespace": "Gameplay.Simulation.Runtime",
-    "references": [
-        "Company.Utilities.Runtime"
-    ],
+    "name": "Company.Utilities.Runtime",
+    "rootNamespace": "Company.Utilities.Runtime",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
