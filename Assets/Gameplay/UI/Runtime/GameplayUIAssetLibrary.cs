@@ -19,21 +19,21 @@ namespace Gameplay.UI.Runtime
         {
             var cameras = await camerasAsset.InstantiateAsync<CameraGroup>();
             cameras.Obj.gameObject.SetActive(true);
-            return (IDisposableInstanceHandle<ICameraGroup>)cameras;
+            return (DisposableInstanceHandle<CameraGroup, ICameraGroup>)cameras;
         }
 
         public async Task<IDisposableInstanceHandle<IGameOverView>> CreateGameOverViewAsync()
         {
             var gameOverView = await gameOverViewAsset.InstantiateAsync<GameOverView>();
             gameOverView.Obj.gameObject.SetActive(true);
-            return (IDisposableInstanceHandle<IGameOverView>)gameOverView;
+            return (DisposableInstanceHandle<GameOverView, IGameOverView>)gameOverView;
         }
 
         public async Task<IDisposableInstanceHandle<IGameplayView>> CreateGameplayViewAsync()
         {
             var gameplayView = await gameplayViewAsset.InstantiateAsync<GameplayView>();
             gameplayView.Obj.gameObject.SetActive(true);
-            return (IDisposableInstanceHandle<IGameplayView>)gameplayView;
+            return (DisposableInstanceHandle<GameplayView, IGameplayView>)gameplayView;
         }
     }
 }

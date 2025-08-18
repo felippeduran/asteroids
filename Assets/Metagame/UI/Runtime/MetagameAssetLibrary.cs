@@ -16,7 +16,7 @@ namespace Metagame.UI.Runtime
         {
             var mainMenuView = await mainMenuViewAsset.InstantiateAsync<MainMenuView>();
             mainMenuView.Obj.gameObject.SetActive(true);
-            return (IDisposableInstanceHandle<IMainMenuView>)mainMenuView;
+            return (DisposableInstanceHandle<MainMenuView, IMainMenuView>)mainMenuView;
         }
     }
 }
