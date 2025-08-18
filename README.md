@@ -27,6 +27,8 @@ For further details, refer to the [Project Details](#project-details).
 * There's no loading screen pre-loaded in the scene to avoid transition gaps between splash screen and UI.
 * Assuming the simplicity of the game, UI unresponsiveness related to just-in-time loading of UI views were ignored.
 
+**AI Disclaimer**: The Cursor IDE was used to develop this project. AI was used for simple/boilerplate code completion and to execute pre-planned refactors. AI was not used to implement logic, neither define or implement the code architecture and key concepts.  
+
 ## Project Details
 
 ### General Structure
