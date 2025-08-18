@@ -1,41 +1,44 @@
 using System;
 using System.Linq;
 
-[Serializable]
-public struct AsteroidsConfig
+namespace Gameplay.Simulation.Runtime
 {
-    public int Initial;
-    public int ExtraPerWave;
-    public float NextWaveCooldown;
-    public FloatRange SpawnRange;
-    public FloatRange SpeedRange;
-    public float SplitAngle;
-    public AsteroidScoreConfig[] Scores;
-}
-
-public enum AsteroidType
-{
-    Small,
-    Medium,
-    Large
-}
-
-[Serializable]
-public struct AsteroidScoreConfig
-{
-    public AsteroidType Type;
-    public int Score;
-}
-
-public static class AsteroidsConfigExtensions
-{
-    public static AsteroidScoreConfig GetScoreConfigFor(this AsteroidScoreConfig[] configs, AsteroidType type)
+    [Serializable]
+    public struct AsteroidsConfig
     {
-        return configs.First(c => c.Type == type);
+        public int Initial;
+        public int ExtraPerWave;
+        public float NextWaveCooldown;
+        public FloatRange SpawnRange;
+        public FloatRange SpeedRange;
+        public float SplitAngle;
+        public AsteroidScoreConfig[] Scores;
     }
 
-    public static int GetScoreFor(this AsteroidScoreConfig[] configs, AsteroidType type)
+    public enum AsteroidType
     {
-        return configs.GetScoreConfigFor(type).Score;
+        Small,
+        Medium,
+        Large
+    }
+
+    [Serializable]
+    public struct AsteroidScoreConfig
+    {
+        public AsteroidType Type;
+        public int Score;
+    }
+
+    public static class AsteroidsConfigExtensions
+    {
+        public static AsteroidScoreConfig GetScoreConfigFor(this AsteroidScoreConfig[] configs, AsteroidType type)
+        {
+            return configs.First(c => c.Type == type);
+        }
+
+        public static int GetScoreFor(this AsteroidScoreConfig[] configs, AsteroidType type)
+        {
+            return configs.GetScoreConfigFor(type).Score;
+        }
     }
 }

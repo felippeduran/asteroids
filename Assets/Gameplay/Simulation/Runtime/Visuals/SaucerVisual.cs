@@ -1,39 +1,42 @@
 using System;
 using UnityEngine;
 
-public class SaucerVisual : MonoBehaviour
+namespace Gameplay.Simulation.Runtime
 {
-    [Serializable]
-    public struct SaucerData
+    public class SaucerVisual : MonoBehaviour
     {
-        public SaucerType Type;
-        public GameObject Root;
-    }
-
-    [SerializeField] Saucer saucer;
-    [SerializeField] SaucerData[] data;
-
-    SaucerType currentActiveType;
-
-    void Update()
-    {
-        if (currentActiveType != saucer.Type)
+        [Serializable]
+        public struct SaucerData
         {
-            currentActiveType = saucer.Type;
+            public SaucerType Type;
+            public GameObject Root;
+        }
+
+        [SerializeField] Saucer saucer;
+        [SerializeField] SaucerData[] data;
+
+        SaucerType currentActiveType;
+
+        void Update()
+        {
+            if (currentActiveType != saucer.Type)
+            {
+                currentActiveType = saucer.Type;
+                UpdateVisual();
+            }
+        }
+
+        void OnEnable()
+        {
             UpdateVisual();
         }
-    }
 
-    void OnEnable()
-    {
-        UpdateVisual();
-    }
-
-    void UpdateVisual()
-    {
-        foreach (var d in data)
+        void UpdateVisual()
         {
-            d.Root.SetActive(d.Type == saucer.Type);
+            foreach (var d in data)
+            {
+                d.Root.SetActive(d.Type == saucer.Type);
+            }
         }
     }
 }

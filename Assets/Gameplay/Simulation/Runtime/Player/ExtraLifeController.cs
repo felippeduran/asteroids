@@ -1,11 +1,14 @@
-public class ExtraLifeController
+namespace Gameplay.Simulation.Runtime
 {
-    public void UpdateExtraLives(ref PlayerState playerState, LivesConfig livesConfig)
+    public class ExtraLifeController
     {
-        if (playerState.Score >= playerState.NextLifeScore)
+        public void UpdateExtraLives(ref PlayerState playerState, LivesConfig livesConfig)
         {
-            playerState.Lives++;
-            playerState.NextLifeScore += livesConfig.ScoreForExtraLife;
+            if (playerState.Score >= playerState.NextLifeScore)
+            {
+                playerState.Lives++;
+                playerState.NextLifeScore += livesConfig.ScoreForExtraLife;
+            }
         }
     }
 }

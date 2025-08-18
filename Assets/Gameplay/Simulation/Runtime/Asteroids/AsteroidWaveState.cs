@@ -1,9 +1,12 @@
 using System;
 
-[Serializable]
-public struct AsteroidWaveState
+namespace Gameplay.Simulation.Runtime
 {
-    public int Current;
-    public bool NextWave;
-    public float NextWaveCooldown;
+    [Serializable]
+    public struct AsteroidWaveState
+    {
+        public int Current;
+        public bool NextWave;
+        public float NextWaveCooldown;
+    }
 }

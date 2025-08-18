@@ -1,8 +1,11 @@
 using System;
 
-[Serializable]
-public struct BulletsConfig
+namespace Gameplay.Simulation.Runtime
 {
-    public float Speed;
-    public float TravelDistance;
+    [Serializable]
+    public struct BulletsConfig
+    {
+        public float Speed;
+        public float TravelDistance;
+    }
 }

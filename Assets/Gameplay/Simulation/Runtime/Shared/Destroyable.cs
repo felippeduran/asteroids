@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class Destroyable : MonoBehaviour
+namespace Gameplay.Simulation.Runtime
 {
-    public bool IsDestroyed { get; set; }
+    public class Destroyable : MonoBehaviour
+    {
+        public bool IsDestroyed { get; set; }
+    }
 }

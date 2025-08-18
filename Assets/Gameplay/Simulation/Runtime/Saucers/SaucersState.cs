@@ -1,7 +1,10 @@
 using System;
 
-[Serializable]
-public struct SaucersState
+namespace Gameplay.Simulation.Runtime
 {
-    public float SpawnCooldown;
+    [Serializable]
+    public struct SaucersState
+    {
+        public float SpawnCooldown;
+    }
 }

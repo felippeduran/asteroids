@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class Team : MonoBehaviour
+namespace Gameplay.Simulation.Runtime
 {
-    public bool IsTeamPlayer { get; set; }
+    public class Team : MonoBehaviour
+    {
+        public bool IsTeamPlayer { get; set; }
+    }
 }

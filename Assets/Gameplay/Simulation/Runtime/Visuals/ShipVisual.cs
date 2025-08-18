@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class ShipVisual : MonoBehaviour
+namespace Gameplay.Simulation.Runtime
 {
-    [SerializeField] GameObject propulsionVisual;
-    [SerializeField] Ship ship;
-
-    public void Update()
+    public class ShipVisual : MonoBehaviour
     {
-        propulsionVisual.SetActive(ship.IsThrusting ? UnityEngine.Random.value < 0.7f : false);
+        [SerializeField] GameObject propulsionVisual;
+        [SerializeField] Ship ship;
+
+        public void Update()
+        {
+            propulsionVisual.SetActive(ship.IsThrusting ? UnityEngine.Random.value < 0.7f : false);
+        }
     }
 }

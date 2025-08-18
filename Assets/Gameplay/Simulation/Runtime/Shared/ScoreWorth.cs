@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class ScoreWorth : MonoBehaviour
+namespace Gameplay.Simulation.Runtime
 {
-    public int Amount { get; set; }
+    public class ScoreWorth : MonoBehaviour
+    {
+        public int Amount { get; set; }
+    }
 }

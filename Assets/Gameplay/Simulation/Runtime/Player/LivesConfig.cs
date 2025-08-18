@@ -1,8 +1,11 @@
 using System;
 
-[Serializable]
-public struct LivesConfig
+namespace Gameplay.Simulation.Runtime
 {
-    public int InitialLives;
-    public int ScoreForExtraLife;
+    [Serializable]
+    public struct LivesConfig
+    {
+        public int InitialLives;
+        public int ScoreForExtraLife;
+    }
 }

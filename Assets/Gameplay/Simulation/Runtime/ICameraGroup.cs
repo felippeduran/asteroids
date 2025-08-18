@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public interface ICameraGroup
+namespace Gameplay.Simulation.Runtime
 {
-    void SetWorldSize(Vector2 worldSize);
+    public interface ICameraGroup
+    {
+        void SetWorldSize(Vector2 worldSize);
+    }
 }
