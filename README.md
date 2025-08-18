@@ -4,6 +4,8 @@ This is a simple implementation of the Asteroids game intended to illustrate pro
 
 The game works with a single `Scene` called `ApplicationScene.scene`. The entry point for the code is at the `"Bootstrap"` `GameObject`, more specifically the `Bootstrap.cs` `MonoBehaviour`. To run the game, just open the scene and hit play.
 
+> **Important**: make sure to build Addressables if running without the Asset Database.
+
 ## TL;DR;
 
 This project demonstrates a scalable game architecture following key principles for long-term maintainability:
