@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Logger = Company.Utilities.Runtime.Logger;
+using Gameplay.Presentation.Runtime;
 
 namespace Gameplay.UI.Runtime
 {
@@ -17,6 +17,18 @@ namespace Gameplay.UI.Runtime
             UpdateLives(lives);
 
             scoreText.text = score.ToString();
+        }
+
+        public InputData GetInput()
+        {
+            return new InputData
+            {
+                TurnLeft = Input.GetKey(KeyCode.A),
+                TurnRight = Input.GetKey(KeyCode.D),
+                Thrust = Input.GetKey(KeyCode.W),
+                Fire = Input.GetKeyDown(KeyCode.Space),
+                Teleport = Input.GetKeyDown(KeyCode.M)
+            };
         }
 
         void UpdateLives(int remainingLives)

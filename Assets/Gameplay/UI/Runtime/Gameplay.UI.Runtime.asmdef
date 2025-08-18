@@ -3,6 +3,7 @@
     "rootNamespace": "Gameplay.UI.Runtime",
     "references": [
         "Gameplay.Simulation.Runtime",
+        "Gameplay.Presentation.Runtime",
         "Company.Utilities.Runtime",
         "Unity.TextMeshPro",
         "Unity.Addressables"

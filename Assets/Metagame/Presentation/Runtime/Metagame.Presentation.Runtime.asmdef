@@ -1,12 +1,7 @@
 {
-    "name": "Application.Runtime",
-    "rootNamespace": "Application.Runtime",
+    "name": "Metagame.Presentation.Runtime",
+    "rootNamespace": "Metagame.Presentation.Runtime",
     "references": [
-        "Gameplay.Simulation.Runtime",
-        "Gameplay.UI.Runtime",
-        "Metagame.UI.Runtime",
-        "Gameplay.Presentation.Runtime",
-        "Metagame.Presentation.Runtime",
         "Company.Utilities.Runtime"
     ],
     "includePlatforms": [],

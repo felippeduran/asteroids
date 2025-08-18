@@ -1,10 +1,18 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Gameplay.Simulation.Runtime;
 using UnityEngine;
+using Gameplay.Simulation.Runtime;
+using Company.Utilities.Runtime;
 
-namespace Gameplay.UI.Runtime
+namespace Gameplay.Presentation.Runtime
 {
+    public interface IGameplayAssetLibrary
+    {
+        Task<IDisposableInstanceHandle<ICameraGroup>> CreateCameraGroupAsync();
+        Task<IDisposableInstanceHandle<IGameplayView>> CreateGameplayViewAsync();
+        Task<IDisposableInstanceHandle<IGameOverView>> CreateGameOverViewAsync();
+    }
+
     public interface IGameOverView
     {
         Task WaitForCompletionAsync(CancellationToken ct);
@@ -13,15 +21,25 @@ namespace Gameplay.UI.Runtime
 
     public interface IGameplayView
     {
+        InputData GetInput();
         void UpdateUI(int lives, int score);
+    }
+
+    public struct InputData
+    {
+        public bool TurnLeft;
+        public bool TurnRight;
+        public bool Thrust;
+        public bool Fire;
+        public bool Teleport;
     }
 
     public class GameplayPresenter
     {
-        readonly GameplayUIAssetLibrary assetLibrary;
+        readonly IGameplayAssetLibrary assetLibrary;
         readonly GameplayFactory gameplayFactory;
 
-        public GameplayPresenter(GameplayUIAssetLibrary assetLibrary, GameplayFactory gameplayFactory)
+        public GameplayPresenter(IGameplayAssetLibrary assetLibrary, GameplayFactory gameplayFactory)
         {
             this.assetLibrary = assetLibrary;
             this.gameplayFactory = gameplayFactory;
@@ -30,11 +48,14 @@ namespace Gameplay.UI.Runtime
         public async Task PresentAsync(CancellationToken ct)
         {
             using var camerasHandle = await assetLibrary.CreateCameraGroupAsync();
-            var inputProvider = new KeyboardInputProvider();
+
+            var gameplayView = await assetLibrary.CreateGameplayViewAsync();
+
+            var inputProvider = new UIInputProviderAdapter(gameplayView.Obj);
             using IGameplay gameplay = await gameplayFactory.CreateAsync(inputProvider, camerasHandle.Obj);
 
             var gameOver = false;
-            using (var gameplayView = await assetLibrary.CreateGameplayViewAsync())
+            using (gameplayView)
             {
                 while (!ct.IsCancellationRequested && !gameplay.GameState.PlayerState.GameOver)
                 {

@@ -1,8 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Company.Utilities.Runtime;
 
-namespace Metagame.UI.Runtime
+namespace Metagame.Presentation.Runtime
 {
+    public interface IMetagameAssetLibrary
+    {
+        Task<IDisposableInstanceHandle<IMainMenuView>> CreateMainMenuViewAsync();
+    }
+
     public interface IMainMenuView
     {
         Task<bool> WaitForCompletionAsync(CancellationToken ct);
@@ -10,9 +16,9 @@ namespace Metagame.UI.Runtime
 
     public class MainMenuPresenter
     {
-        readonly MetagameAssetLibrary metagameAssetLibrary;
+        readonly IMetagameAssetLibrary metagameAssetLibrary;
 
-        public MainMenuPresenter(MetagameAssetLibrary metagameAssetLibrary)
+        public MainMenuPresenter(IMetagameAssetLibrary metagameAssetLibrary)
         {
             this.metagameAssetLibrary = metagameAssetLibrary;
         }

@@ -2,6 +2,7 @@
     "name": "Metagame.UI.Runtime",
     "rootNamespace": "Metagame.UI.Runtime",
     "references": [
+        "Metagame.Presentation.Runtime",
         "Company.Utilities.Runtime",
         "Unity.Addressables"
     ],

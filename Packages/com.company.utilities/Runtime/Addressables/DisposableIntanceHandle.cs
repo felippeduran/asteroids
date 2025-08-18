@@ -4,7 +4,12 @@ using UnityEngine.AddressableAssets;
 
 namespace Company.Utilities.Runtime
 {
-    public class DisposableInstanceHandle<TInstance> : IDisposable where TInstance : MonoBehaviour
+    public interface IDisposableInstanceHandle<TInstance> : IDisposable
+    {
+        TInstance Obj { get; }
+    }
+
+    public class DisposableInstanceHandle<TInstance> : IDisposableInstanceHandle<TInstance> where TInstance : MonoBehaviour
     {
         readonly TInstance obj;
         readonly AssetReferenceGameObject assetRef;
@@ -24,7 +29,7 @@ namespace Company.Utilities.Runtime
         }
     }
 
-    public class DisposableInstanceHandle<TInstance, TInterface> : IDisposable where TInstance : MonoBehaviour, TInterface
+    public class DisposableInstanceHandle<TInstance, TInterface> : IDisposableInstanceHandle<TInterface> where TInstance : MonoBehaviour, TInterface
     {
         readonly AssetReferenceGameObject assetRef;
         readonly TInstance obj;
