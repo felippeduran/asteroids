@@ -14,13 +14,13 @@ namespace Company.Utilities.Runtime
     {
         readonly T prefab;
         readonly List<T> available;
-        readonly List<T> inUse;
+        readonly HashSet<T> inUse;
 
         public ObjectPool(T prefab)
         {
             this.prefab = prefab;
             available = new List<T>();
-            inUse = new List<T>();
+            inUse = new HashSet<T>();
         }
 
         public T Get()
@@ -35,9 +35,9 @@ namespace Company.Utilities.Runtime
             else
             {
                 obj = GameObject.Instantiate(prefab);
-                inUse.Add(obj);
             }
 
+            inUse.Add(obj);
             obj.Enable();
 
             return obj;
@@ -47,6 +47,7 @@ namespace Company.Utilities.Runtime
         {
             obj.Disable();
             available.Add(obj);
+            inUse.Remove(obj);
         }
 
         public void Dispose()
