@@ -14,14 +14,14 @@ namespace Gameplay.Simulation.Runtime
 
     public class BulletsSystem
     {
-        readonly ObjectPool<Bullet> bulletsPool;
+        readonly IObjectPool<IBullet> bulletsPool;
 
-        public BulletsSystem(ObjectPool<Bullet> bulletsPool)
+        public BulletsSystem(IObjectPool<IBullet> bulletsPool)
         {
             this.bulletsPool = bulletsPool;
         }
 
-        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref PlayerState playerState, List<Bullet> existingBullets, BulletsConfig bulletsConfig)
+        public void UpdateBullets(float deltaTime, FireBulletData[] bulletsFired, ref PlayerState playerState, List<IBullet> existingBullets, BulletsConfig bulletsConfig)
         {
             var bullets = SpawnBullets(bulletsFired, bulletsConfig);
             existingBullets.AddRange(bullets);
@@ -32,9 +32,9 @@ namespace Gameplay.Simulation.Runtime
             HandleDestroyedBullets(ref playerState, existingBullets);
         }
 
-        Bullet[] SpawnBullets(FireBulletData[] bulletsFired, BulletsConfig bulletsConfig)
+        IBullet[] SpawnBullets(FireBulletData[] bulletsFired, BulletsConfig bulletsConfig)
         {
-            var bullets = new Bullet[bulletsFired.Length];
+            var bullets = new IBullet[bulletsFired.Length];
             for (int i = 0; i < bulletsFired.Length; i++)
             {
                 bullets[i] = SpawnBullet(bulletsFired[i], bulletsConfig);
@@ -43,7 +43,7 @@ namespace Gameplay.Simulation.Runtime
             return bullets;
         }
 
-        void UpdateTraveledBullets(float deltaTime, List<Bullet> existingBullets, BulletsConfig bulletsConfig)
+        void UpdateTraveledBullets(float deltaTime, List<IBullet> existingBullets, BulletsConfig bulletsConfig)
         {
             foreach (var bullet in existingBullets)
             {
@@ -51,7 +51,7 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        void ExpireTraveledBullets(List<Bullet> existingBullets, BulletsConfig bulletsConfig)
+        void ExpireTraveledBullets(List<IBullet> existingBullets, BulletsConfig bulletsConfig)
         {
             foreach (var bullet in existingBullets)
             {
@@ -62,9 +62,9 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        Bullet SpawnBullet(FireBulletData bulletData, BulletsConfig bulletsConfig)
+        IBullet SpawnBullet(FireBulletData bulletData, BulletsConfig bulletsConfig)
         {
-            Bullet bullet = bulletsPool.Get();
+            IBullet bullet = bulletsPool.Get();
 
             bullet.IsDestroyed = false;
             bullet.Position = bulletData.Position;
@@ -77,9 +77,9 @@ namespace Gameplay.Simulation.Runtime
             return bullet;
         }
 
-        void HandleDestroyedBullets(ref PlayerState playerState, List<Bullet> existingBullets)
+        void HandleDestroyedBullets(ref PlayerState playerState, List<IBullet> existingBullets)
         {
-            List<Bullet> bulletsToRemove = new();
+            List<IBullet> bulletsToRemove = new();
             foreach (var bullet in existingBullets)
             {
                 if (bullet.IsDestroyed)

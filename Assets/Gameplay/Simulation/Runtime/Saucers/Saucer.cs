@@ -6,7 +6,7 @@ using Company.Utilities.Runtime;
 namespace Gameplay.Simulation.Runtime
 {
     [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
-    public class Saucer : MonoBehaviour, IPoolable
+    public class Saucer : MonoBehaviour, ISaucer, IPoolable
     {
         [Serializable]
         public struct ShootRingData

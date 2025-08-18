@@ -4,7 +4,7 @@ using Company.Utilities.Runtime;
 namespace Gameplay.Simulation.Runtime
 {
     [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(ScoreWorth))]
-    public class Asteroid : MonoBehaviour, IPoolable
+    public class Asteroid : MonoBehaviour, IAsteroid, IPoolable
     {
         [SerializeField] AsteroidType type;
         [SerializeField] new Rigidbody2D rigidbody;

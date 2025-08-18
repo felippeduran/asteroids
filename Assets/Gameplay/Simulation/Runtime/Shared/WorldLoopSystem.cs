@@ -7,7 +7,7 @@ namespace Gameplay.Simulation.Runtime
     {
         public WorldLoopSystem() { }
 
-        public void LoopObjectsThroughWorld(IShip playerShip, ISet<Asteroid> existingAsteroids, List<Saucer> existingSaucers, List<Bullet> existingBullets, Bounds worldBounds)
+        public void LoopObjectsThroughWorld(IShip playerShip, ISet<IAsteroid> existingAsteroids, List<ISaucer> existingSaucers, List<IBullet> existingBullets, Bounds worldBounds)
         {
             foreach (var asteroid in existingAsteroids)
             {

@@ -10,8 +10,8 @@ namespace Gameplay.Simulation.Runtime
         public SaucersState SaucersState;
         public PlayerState PlayerState;
         public Ship PlayerShip;
-        public HashSet<Asteroid> Asteroids;
-        public List<Saucer> Saucers;
-        public List<Bullet> Bullets;
+        public HashSet<IAsteroid> Asteroids;
+        public List<ISaucer> Saucers;
+        public List<IBullet> Bullets;
     }
 }

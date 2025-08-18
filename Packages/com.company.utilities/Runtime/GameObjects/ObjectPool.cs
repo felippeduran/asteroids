@@ -10,7 +10,15 @@ namespace Company.Utilities.Runtime
         void Enable();
     }
 
-    public class ObjectPool<T> : IDisposable where T : MonoBehaviour, IPoolable
+    public interface IObjectPool<T> where T : IPoolable
+    {
+        T Get();
+        void Add(T obj);
+    }
+
+    public class ObjectPool<TInterface, T> : IObjectPool<TInterface>, IDisposable
+    where T : MonoBehaviour, TInterface
+    where TInterface : IPoolable
     {
         readonly T prefab;
         readonly List<T> available;
@@ -23,7 +31,7 @@ namespace Company.Utilities.Runtime
             inUse = new HashSet<T>();
         }
 
-        public T Get()
+        public TInterface Get()
         {
             T obj;
             if (available.Count > 0)
@@ -43,11 +51,12 @@ namespace Company.Utilities.Runtime
             return obj;
         }
 
-        public void Add(T obj)
+        public void Add(TInterface obj)
         {
             obj.Disable();
-            available.Add(obj);
-            inUse.Remove(obj);
+            available.Add(obj as T);
+            inUse.Remove(obj as T);
+
         }
 
         public void Dispose()

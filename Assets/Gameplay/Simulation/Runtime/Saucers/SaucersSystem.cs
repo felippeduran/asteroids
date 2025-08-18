@@ -9,17 +9,17 @@ namespace Gameplay.Simulation.Runtime
 {
     public class SaucersSystem
     {
-        readonly ObjectPool<Saucer> saucersPool;
+        readonly IObjectPool<ISaucer> saucersPool;
         readonly Random random;
         readonly RaycastHit2D[] raycasHits = new RaycastHit2D[5];
 
-        public SaucersSystem(ObjectPool<Saucer> saucersPool)
+        public SaucersSystem(IObjectPool<ISaucer> saucersPool)
         {
             this.saucersPool = saucersPool;
             this.random = new Random();
         }
 
-        public FireBulletData[] UpdateSaucers(float deltaTime, ref SaucersState saucerState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
+        public FireBulletData[] UpdateSaucers(float deltaTime, ref SaucersState saucerState, List<ISaucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
         {
             HandleSaucerSpawning(deltaTime, ref saucerState, existingSaucers, saucersConfig, worldBounds);
             HandleSaucerMovement(deltaTime, existingSaucers, saucersConfig);
@@ -29,7 +29,7 @@ namespace Gameplay.Simulation.Runtime
             return firedBullets;
         }
 
-        void HandleSaucerSpawning(float deltaTime, ref SaucersState saucersState, List<Saucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
+        void HandleSaucerSpawning(float deltaTime, ref SaucersState saucersState, List<ISaucer> existingSaucers, SaucersConfig saucersConfig, Bounds worldBounds)
         {
             saucersState.SpawnCooldown -= deltaTime;
             if (saucersState.SpawnCooldown < 0f)
@@ -47,7 +47,7 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        FireBulletData[] HandleSaucerShooting(float deltaTime, List<Saucer> existingSaucers, SaucersConfig saucersConfig)
+        FireBulletData[] HandleSaucerShooting(float deltaTime, List<ISaucer> existingSaucers, SaucersConfig saucersConfig)
         {
             var bulletsFired = new List<FireBulletData>();
             foreach (var saucer in existingSaucers)
@@ -89,7 +89,7 @@ namespace Gameplay.Simulation.Runtime
             return bulletsFired.ToArray();
         }
 
-        void HandleSaucerMovement(float deltaTime, List<Saucer> existingSaucers, SaucersConfig saucersConfig)
+        void HandleSaucerMovement(float deltaTime, List<ISaucer> existingSaucers, SaucersConfig saucersConfig)
         {
             foreach (var saucer in existingSaucers)
             {
@@ -114,9 +114,9 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        void HandleSaucerBoundaryCrossing(List<Saucer> existingSaucers, Bounds worldBounds)
+        void HandleSaucerBoundaryCrossing(List<ISaucer> existingSaucers, Bounds worldBounds)
         {
-            var saucersToRemove = new List<Saucer>();
+            var saucersToRemove = new List<ISaucer>();
             foreach (var saucer in existingSaucers)
             {
                 if (saucer.LinearVelocity.x > 0 && saucer.Position.x > worldBounds.max.x)
@@ -138,9 +138,9 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        void HandleDestroyedSaucers(List<Saucer> existingSaucers)
+        void HandleDestroyedSaucers(List<ISaucer> existingSaucers)
         {
-            var saucersToRemove = new List<Saucer>();
+            var saucersToRemove = new List<ISaucer>();
             foreach (var saucer in existingSaucers)
             {
                 if (saucer.IsDestroyed)
@@ -156,7 +156,7 @@ namespace Gameplay.Simulation.Runtime
             }
         }
 
-        Saucer SpawnSaucer(SaucerConfig saucerConfig, Bounds worldBounds)
+        ISaucer SpawnSaucer(SaucerConfig saucerConfig, Bounds worldBounds)
         {
             var saucer = saucersPool.Get();
 

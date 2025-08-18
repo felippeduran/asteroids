@@ -40,14 +40,14 @@ namespace Gameplay.Simulation.Runtime
                 },
                 SaucersState = new SaucersState { SpawnCooldown = gameConfig.Saucers.SpawnCooldown },
                 PlayerShip = playerShip,
-                Asteroids = new HashSet<Asteroid>(),
-                Saucers = new List<Saucer>(),
-                Bullets = new List<Bullet>(),
+                Asteroids = new HashSet<IAsteroid>(),
+                Saucers = new List<ISaucer>(),
+                Bullets = new List<IBullet>(),
             };
 
-            var asteroidsPool = new ObjectPool<Asteroid>(assets.Asteroid);
-            var bulletsPool = new ObjectPool<Bullet>(assets.Bullet);
-            var saucersPool = new ObjectPool<Saucer>(assets.Saucer);
+            var asteroidsPool = new ObjectPool<IAsteroid, Asteroid>(assets.Asteroid);
+            var bulletsPool = new ObjectPool<IBullet, Bullet>(assets.Bullet);
+            var saucersPool = new ObjectPool<ISaucer, Saucer>(assets.Saucer);
 
             var gameSystems = new GameSystems
             {

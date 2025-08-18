@@ -5,7 +5,7 @@ using Logger = Company.Utilities.Runtime.Logger;
 namespace Gameplay.Simulation.Runtime
 {
     [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Destroyable)), RequireComponent(typeof(Team))]
-    public class Bullet : MonoBehaviour, IPoolable
+    public class Bullet : MonoBehaviour, IBullet, IPoolable
     {
         [SerializeField] new Rigidbody2D rigidbody;
         [SerializeField] new Collider2D collider;
