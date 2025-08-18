@@ -1,22 +1,11 @@
 using System;
 using UnityEngine;
-using Gameplay.Simulation.Runtime;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public struct GameSystems
-    {
-        public ShipSystem ShipSystem;
-        public BulletsSystem BulletsSystem;
-        public SaucersSystem SaucersSystem;
-        public AsteroidsSystem AsteroidsSystem;
-        public WorldLoopSystem WorldLoopSystem;
-        public ExtraLifeSystem ExtraLifeSystem;
-    }
-
     public interface IGameplay : IDisposable
     {
         Task<bool> WaitForCompletionAsync(CancellationToken ct);
