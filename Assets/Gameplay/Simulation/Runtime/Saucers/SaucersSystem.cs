@@ -7,13 +7,13 @@ using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public class SaucersController
+    public class SaucersSystem
     {
         readonly ObjectPool<Saucer> saucersPool;
         readonly Random random;
         readonly RaycastHit2D[] raycasHits = new RaycastHit2D[5];
 
-        public SaucersController(ObjectPool<Saucer> saucersPool)
+        public SaucersSystem(ObjectPool<Saucer> saucersPool)
         {
             this.saucersPool = saucersPool;
             this.random = new Random();

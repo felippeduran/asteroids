@@ -51,12 +51,12 @@ namespace Gameplay.Simulation.Runtime
 
             var gameSystems = new GameSystems
             {
-                ShipController = new ShipController(inputProvider),
-                BulletsController = new BulletsController(bulletsPool),
-                SaucersController = new SaucersController(saucersPool),
-                AsteroidsController = new AsteroidsController(asteroidsPool),
-                WorldLoopController = new WorldLoopController(),
-                ExtraLifeController = new ExtraLifeController()
+                ShipSystem = new ShipSystem(inputProvider),
+                BulletsSystem = new BulletsSystem(bulletsPool),
+                SaucersSystem = new SaucersSystem(saucersPool),
+                AsteroidsSystem = new AsteroidsSystem(asteroidsPool),
+                WorldLoopSystem = new WorldLoopSystem(),
+                ExtraLifeSystem = new ExtraLifeSystem()
             };
 
             cameraGroup.SetWorldSize(gameConfig.WorldSize);

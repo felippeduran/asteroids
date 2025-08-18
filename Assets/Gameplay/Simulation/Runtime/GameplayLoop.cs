@@ -9,12 +9,12 @@ namespace Gameplay.Simulation.Runtime
 {
     public struct GameSystems
     {
-        public ShipController ShipController;
-        public BulletsController BulletsController;
-        public SaucersController SaucersController;
-        public AsteroidsController AsteroidsController;
-        public WorldLoopController WorldLoopController;
-        public ExtraLifeController ExtraLifeController;
+        public ShipSystem ShipSystem;
+        public BulletsSystem BulletsSystem;
+        public SaucersSystem SaucersSystem;
+        public AsteroidsSystem AsteroidsSystem;
+        public WorldLoopSystem WorldLoopSystem;
+        public ExtraLifeSystem ExtraLifeSystem;
     }
 
     public interface IGameplay : IDisposable
@@ -61,15 +61,15 @@ namespace Gameplay.Simulation.Runtime
 
         public void UpdateSimulation(float deltaTime)
         {
-            var bulletsFired = gameSystems.ShipController.UpdateShip(deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, gameConfig.WorldBounds);
-            var moreBulletsFired = gameSystems.SaucersController.UpdateSaucers(deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, gameConfig.WorldBounds);
+            var bulletsFired = gameSystems.ShipSystem.UpdateShip(deltaTime, gameState.PlayerShip, ref gameState.PlayerState, gameConfig.Ship, gameConfig.WorldBounds);
+            var moreBulletsFired = gameSystems.SaucersSystem.UpdateSaucers(deltaTime, ref gameState.SaucersState, gameState.Saucers, gameConfig.Saucers, gameConfig.WorldBounds);
             bulletsFired = bulletsFired.Concat(moreBulletsFired).ToArray();
-            gameSystems.BulletsController.UpdateBullets(deltaTime, bulletsFired, ref gameState.PlayerState, gameState.Bullets, gameConfig.Bullets);
+            gameSystems.BulletsSystem.UpdateBullets(deltaTime, bulletsFired, ref gameState.PlayerState, gameState.Bullets, gameConfig.Bullets);
 
-            gameSystems.ExtraLifeController.UpdateExtraLives(ref gameState.PlayerState, gameConfig.Lives);
+            gameSystems.ExtraLifeSystem.UpdateExtraLives(ref gameState.PlayerState, gameConfig.Lives);
 
-            gameSystems.AsteroidsController.UpdateAsteroids(deltaTime, ref gameState.WaveState, gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameConfig.Asteroids, gameConfig.WorldBounds);
-            gameSystems.WorldLoopController.LoopObjectsThroughWorld(gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameState.Bullets, gameConfig.WorldBounds);
+            gameSystems.AsteroidsSystem.UpdateAsteroids(deltaTime, ref gameState.WaveState, gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameConfig.Asteroids, gameConfig.WorldBounds);
+            gameSystems.WorldLoopSystem.LoopObjectsThroughWorld(gameState.PlayerShip, gameState.Asteroids, gameState.Saucers, gameState.Bullets, gameConfig.WorldBounds);
 
 
             OnUpdate(gameState);

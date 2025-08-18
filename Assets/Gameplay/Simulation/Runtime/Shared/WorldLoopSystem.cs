@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public class WorldLoopController
+    public class WorldLoopSystem
     {
-        public WorldLoopController() { }
+        public WorldLoopSystem() { }
 
         public void LoopObjectsThroughWorld(IShip playerShip, ISet<Asteroid> existingAsteroids, List<Saucer> existingSaucers, List<Bullet> existingBullets, Bounds worldBounds)
         {

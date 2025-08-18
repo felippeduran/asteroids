@@ -5,7 +5,7 @@ using Gameplay.Simulation.Runtime;
 namespace Gameplay.Simulation.Tests
 {
     [TestFixture]
-    public class ShipControllerTests
+    public class ShipSystemTests
     {
         const float kDeltaTime = 0.016f;
 
@@ -19,7 +19,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0f, fakeShip.AngularVelocity);
@@ -35,7 +35,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { TurnLeft = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(shipConfig.TurnSpeed, fakeShip.AngularVelocity);
@@ -51,7 +51,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { TurnRight = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(-shipConfig.TurnSpeed, fakeShip.AngularVelocity);
@@ -67,7 +67,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Thrust = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(shipConfig.ThrustForce * Vector2.up, fakeShip.ThrustForce);
@@ -87,7 +87,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(1, bulletsFired.Length);
@@ -107,7 +107,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Teleport = true };
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreNotEqual(originalPosition, fakeShip.Position);
@@ -129,7 +129,7 @@ namespace Gameplay.Simulation.Tests
             };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(shipConfig.TurnSpeed, fakeShip.AngularVelocity);
@@ -147,7 +147,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0, bulletsFired.Length);
@@ -163,7 +163,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput { Fire = true };
 
             // Act
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(0, bulletsFired.Length);
@@ -180,7 +180,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(initialLives - 1, playerState.Lives);
@@ -199,7 +199,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.IsFalse(playerState.Reviving);
@@ -220,7 +220,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.IsTrue(playerState.Reviving);
@@ -238,7 +238,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
             // Act
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
             Assert.AreEqual(initialLives, playerState.Lives);
@@ -256,7 +256,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
 
-            CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(initialLives, playerState.Lives);
             Assert.IsTrue(playerState.Reviving);
@@ -272,7 +272,7 @@ namespace Gameplay.Simulation.Tests
             var input = new PlayerInput();
 
 
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(0, bulletsFired.Length);
         }
@@ -290,15 +290,15 @@ namespace Gameplay.Simulation.Tests
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Fire = true };
 
-            var bulletsFired = CreateShipController(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             Assert.AreEqual(fakeShip.BulletSpawnPosition, bulletsFired[0].Position);
         }
 
-        ShipController CreateShipController(PlayerInput input)
+        ShipSystem CreateShipSystem(PlayerInput input)
         {
             var fakeInputProvider = new FakeInputProvider(input);
-            return new ShipController(fakeInputProvider);
+            return new ShipSystem(fakeInputProvider);
         }
 
         ShipConfig CreateShipConfig()

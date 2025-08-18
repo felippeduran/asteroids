@@ -5,11 +5,11 @@ using System;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public class ShipController
+    public class ShipSystem
     {
         readonly IInputProvider inputProvider;
 
-        public ShipController(IInputProvider inputProvider)
+        public ShipSystem(IInputProvider inputProvider)
         {
             this.inputProvider = inputProvider;
         }

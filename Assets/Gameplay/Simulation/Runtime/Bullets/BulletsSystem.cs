@@ -12,11 +12,11 @@ namespace Gameplay.Simulation.Runtime
         public bool IsPlayerBullet;
     }
 
-    public class BulletsController
+    public class BulletsSystem
     {
         readonly ObjectPool<Bullet> bulletsPool;
 
-        public BulletsController(ObjectPool<Bullet> bulletsPool)
+        public BulletsSystem(ObjectPool<Bullet> bulletsPool)
         {
             this.bulletsPool = bulletsPool;
         }

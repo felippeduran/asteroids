@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public class AsteroidsController
+    public class AsteroidsSystem
     {
         readonly ObjectPool<Asteroid> asteroidsPool;
 
-        public AsteroidsController(ObjectPool<Asteroid> asteroidsPool)
+        public AsteroidsSystem(ObjectPool<Asteroid> asteroidsPool)
         {
             this.asteroidsPool = asteroidsPool;
         }

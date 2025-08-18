@@ -1,6 +1,6 @@
 namespace Gameplay.Simulation.Runtime
 {
-    public class ExtraLifeController
+    public class ExtraLifeSystem
     {
         public void UpdateExtraLives(ref PlayerState playerState, LivesConfig livesConfig)
         {
