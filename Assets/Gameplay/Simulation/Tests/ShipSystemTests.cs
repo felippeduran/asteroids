@@ -79,9 +79,11 @@ namespace Gameplay.Simulation.Tests
             var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip
-            { 
+            {
                 Position = Vector2.one,
-                Forward = Vector2.up
+                Forward = Vector2.up,
+                Ammo = 1,
+                AmmoReloadCooldown = 1f
             };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Fire = true };
@@ -91,9 +93,86 @@ namespace Gameplay.Simulation.Tests
 
             // Assert
             Assert.AreEqual(1, bulletsFired.Length);
+            Assert.AreEqual(0, fakeShip.Ammo);
             Assert.AreEqual(fakeShip.BulletSpawnPosition, bulletsFired[0].Position);
             Assert.AreEqual(fakeShip.Forward, bulletsFired[0].Forward);
             Assert.IsTrue(bulletsFired[0].IsPlayerBullet);
+        }
+
+        [Test]
+        public void UpdateShip_WithFireInput_ShouldNotFireIfAmmoIsZero()
+        {
+            var shipConfig = CreateShipConfig();
+            var worldBounds = TestUtilities.CreateWorldBounds();
+            var fakeShip = new FakeShip { Ammo = 0, AmmoReloadCooldown = 1f };
+            var playerState = new PlayerState { Lives = 3 };
+            var input = new PlayerInput { Fire = true };
+
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+
+            Assert.AreEqual(0, bulletsFired.Length);
+            Assert.AreEqual(0, fakeShip.Ammo);
+        }
+
+        [Test]
+        public void UpdateShip_WithFireInput_ShouldNotFireIfFireCooldownIsNotExpired()
+        {
+            var shipConfig = CreateShipConfig();
+            var worldBounds = TestUtilities.CreateWorldBounds();
+            var fakeShip = new FakeShip { Ammo = 1, FireCooldown = 1f };
+            var playerState = new PlayerState { Lives = 3 };
+            var input = new PlayerInput { Fire = true };
+
+            var bulletsFired = CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+
+            Assert.AreEqual(0, bulletsFired.Length);
+            Assert.AreEqual(1, fakeShip.Ammo);
+            Assert.AreEqual(1f - kDeltaTime, fakeShip.FireCooldown);
+        }
+
+        [Test]
+        public void UpdateShip_ShouldReloadAmmoWithCooldownExpired()
+        {
+            var shipConfig = CreateShipConfig();
+            var worldBounds = TestUtilities.CreateWorldBounds();
+            var fakeShip = new FakeShip { Ammo = 0 };
+            var playerState = new PlayerState { Lives = 3 };
+            var input = new PlayerInput { Fire = false };
+
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+
+            Assert.AreEqual(1, fakeShip.Ammo);
+        }
+
+        [Test]
+        public void UpdateShip_ShouldNotReloadAmmoIfCooldownIsNotExpired()
+        {
+            var shipConfig = CreateShipConfig();
+            var worldBounds = TestUtilities.CreateWorldBounds();
+            var fakeShip = new FakeShip { Ammo = 0, AmmoReloadCooldown = 1f };
+            var playerState = new PlayerState { Lives = 3 };
+            var input = new PlayerInput { Fire = false };
+
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+
+            Assert.AreEqual(0, fakeShip.Ammo);
+            Assert.AreEqual(1f - kDeltaTime, fakeShip.AmmoReloadCooldown);
+        }
+
+        [Test]
+        public void UpdateShip_ShouldNotReloadAmmoIfAmmoIsFull()
+        {
+            var shipConfig = CreateShipConfig();
+
+            var worldBounds = TestUtilities.CreateWorldBounds();
+            var fakeShip = new FakeShip { Ammo = 1 };
+            var playerState = new PlayerState { Lives = 3 };
+            var input = new PlayerInput { Fire = false };
+
+            CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
+
+            Assert.AreEqual(1, fakeShip.Ammo);
+            Assert.AreEqual(1f / shipConfig.AmmoReloadRate, fakeShip.AmmoReloadCooldown);
         }
 
         [Test]
@@ -119,7 +198,7 @@ namespace Gameplay.Simulation.Tests
         {
             var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
-            var fakeShip = new FakeShip { Forward = Vector2.up };
+            var fakeShip = new FakeShip { Forward = Vector2.up, Ammo = 1 };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput 
             { 
@@ -285,7 +364,8 @@ namespace Gameplay.Simulation.Tests
             var fakeShip = new FakeShip
             {
                 Position = new Vector2(5f, 3f),
-                Forward = new Vector2(1f, 0f)
+                Forward = new Vector2(1f, 0f),
+                Ammo = 1
             };            
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Fire = true };
@@ -307,7 +387,10 @@ namespace Gameplay.Simulation.Tests
             {
                 ThrustForce = 10f,
                 TurnSpeed = 90f,
-                ReviveCooldown = 2f
+                ReviveCooldown = 2f,
+                MaxAmmo = 1,
+                AmmoReloadRate = 1f,
+                FireRate = 1f
             };
         }
 

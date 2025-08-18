@@ -53,9 +53,9 @@ namespace Gameplay.Simulation.Runtime
 
             if (input.Fire)
             {
-                if (ship.Ammo > 0 && ship.FireCooldown <= 0)
+                if (ship.Ammo > 0 && ship.FireCooldown <= 0f)
                 {
-                    ship.Ammo--;
+                    ship.Ammo -= 1;
                     ship.FireCooldown = 1f / shipConfig.FireRate;
                     fireBulletData = new FireBulletData[] { CreateFireBulletData(ship) };
                 }
@@ -110,7 +110,7 @@ namespace Gameplay.Simulation.Runtime
         void HandleShipReloadAmmo(float deltaTime, IShip ship, ShipConfig shipConfig)
         {
             ship.AmmoReloadCooldown = Math.Max(0f, ship.AmmoReloadCooldown - deltaTime);
-            if (ship.AmmoReloadCooldown <= 0)
+            if (ship.AmmoReloadCooldown <= 0f)
             {
                 ship.Ammo = Math.Min(ship.Ammo + 1, shipConfig.MaxAmmo);
                 ship.AmmoReloadCooldown = 1f / shipConfig.AmmoReloadRate;
@@ -140,7 +140,7 @@ namespace Gameplay.Simulation.Runtime
                 if (!playerState.Reviving && !playerState.GameOver)
                 {
                     Logger.Log("Ship destroyed");
-                    playerState.Lives--;
+                    playerState.Lives -= 1;
                     if (playerState.Lives > 0)
                     {
                         Logger.Log("Reviving ship");
