@@ -283,6 +283,12 @@ MonoBehaviour:
     Root: {fileID: 6405686363244325053}
   - Type: 1
     Root: {fileID: 3100477835569794707}
+  spriteRenderers:
+  - {fileID: 7324064879754076137}
+  - {fileID: 9014432278734655545}
+  - {fileID: 42407169063326705}
+  - {fileID: 6785461606393124032}
+  particleSystemPrefab: {fileID: 6647123114902368737, guid: 70397538a26e342928db75fc7398a42e, type: 3}
 --- !u!50 &1245189824471065487
 Rigidbody2D:
   serializedVersion: 5

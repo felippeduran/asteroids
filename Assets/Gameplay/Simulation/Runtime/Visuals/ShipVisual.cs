@@ -6,10 +6,21 @@ namespace Gameplay.Simulation.Runtime
     {
         [SerializeField] GameObject propulsionVisual;
         [SerializeField] Ship ship;
+        [SerializeField] SpriteRenderer spriteRenderer;
+        [SerializeField] ParticleSystem particleSystemPrefab;
 
         public void Update()
         {
-            propulsionVisual.SetActive(ship.IsThrusting ? UnityEngine.Random.value < 0.7f : false);
+            propulsionVisual.SetActive(ship.IsThrusting ? Random.value < 0.7f : false);
+
+            if (ship.IsDestroyed && gameObject.activeSelf)
+            {
+                var particleSystem = Instantiate(particleSystemPrefab, transform.position, Quaternion.identity);
+
+                var main = particleSystem.main;
+                main.startColor = spriteRenderer.color;
+                particleSystem.GetComponent<ParticleSystemRenderer>().sortingOrder = spriteRenderer.sortingOrder;
+            }
         }
     }
 }

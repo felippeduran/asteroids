@@ -34,7 +34,7 @@ MonoBehaviour:
         Max: 19
       SpeedRange:
         Min: 0.2
-        Max: 5
+        Max: 7
       SplitAngle: 180
       Scores:
       - Type: 0

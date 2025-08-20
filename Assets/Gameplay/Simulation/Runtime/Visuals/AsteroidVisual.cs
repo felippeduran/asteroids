@@ -16,8 +16,21 @@ namespace Gameplay.Simulation.Runtime
         [SerializeField] Gradient colorRange;
         [SerializeField] SpriteRenderer[] spriteRenderers;
         [SerializeField] AsteroidData[] data;
+        [SerializeField] ParticleSystem particleSystemPrefab;
 
         AsteroidType currentActiveType;
+
+        void Update()
+        {
+            if (asteroid.IsDestroyed && gameObject.activeSelf)
+            {
+                var particleSystem = Instantiate(particleSystemPrefab, transform.position, Quaternion.identity);
+
+                var main = particleSystem.main;
+                main.startColor = spriteRenderers[0].color;
+                particleSystem.GetComponent<ParticleSystemRenderer>().sortingOrder = spriteRenderers[0].sortingOrder;
+            }
+        }
 
         void LateUpdate()
         {

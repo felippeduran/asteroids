@@ -14,10 +14,24 @@ namespace Gameplay.Simulation.Runtime
 
         [SerializeField] Saucer saucer;
         [SerializeField] SaucerData[] data;
+        [SerializeField] SpriteRenderer[] spriteRenderers;
+        [SerializeField] ParticleSystem particleSystemPrefab;
 
         SaucerType currentActiveType;
 
         void Update()
+        {
+            if (saucer.IsDestroyed && gameObject.activeSelf)
+            {
+                var particleSystem = Instantiate(particleSystemPrefab, transform.position, Quaternion.identity);
+
+                var main = particleSystem.main;
+                main.startColor = spriteRenderers[0].color;
+                particleSystem.GetComponent<ParticleSystemRenderer>().sortingOrder = spriteRenderers[0].sortingOrder;
+            }
+        }
+
+        void LateUpdate()
         {
             if (currentActiveType != saucer.Type)
             {

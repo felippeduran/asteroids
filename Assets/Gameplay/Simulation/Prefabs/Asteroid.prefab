@@ -1529,6 +1529,7 @@ MonoBehaviour:
     Root: {fileID: 7361885784834526533}
   - Type: 2
     Root: {fileID: 9075631255082644527}
+  particleSystemPrefab: {fileID: 6647123114902368737, guid: 70397538a26e342928db75fc7398a42e, type: 3}
 --- !u!50 &3420081658896896540
 Rigidbody2D:
   serializedVersion: 5

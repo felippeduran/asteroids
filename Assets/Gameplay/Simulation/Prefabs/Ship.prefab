@@ -135,6 +135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propulsionVisual: {fileID: 4349929919167555231}
   ship: {fileID: 1452352715315795337}
+  spriteRenderer: {fileID: 5582525515915612301}
+  particleSystemPrefab: {fileID: 6647123114902368737, guid: 70397538a26e342928db75fc7398a42e, type: 3}
 --- !u!1 &2825173865788963799
 GameObject:
   m_ObjectHideFlags: 0
