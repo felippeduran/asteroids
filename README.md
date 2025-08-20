@@ -1,17 +1,20 @@
 # Simple Asteroids Project
 
-This is a simple implementation of the Asteroids game intended to illustrate programming, Unity and general code architecture skills. For a high level overview, refer to [TL;DR;](#tldr). For details about specific parts of the project, refer to their own sections.
+This is a simple implementation of the Asteroids game intended to illustrate programming, Unity and general code architecture skills. For a high level overview, refer to [Overview](#overview). For details about specific parts of the project, refer to their own sections.
 
 The game works with a single `Scene` called `ApplicationScene.scene`. The entry point for the code is at the `"Bootstrap"` `GameObject`, more specifically the `Bootstrap.cs` `MonoBehaviour`. To run the game, just open the scene and hit play.
 
-> **Important**: make sure to build Addressables if running without the Asset Database.
+> **Important**:
+> * Make sure to build `Addressables` if running without the Asset Database.
+> * This project uses **Git LFS**, make sure to configure it properly.
+> * This project was implemented using **Unity 6000.0.48f1**
 
-## TL;DR;
+## Overview
 
 This project demonstrates a scalable game architecture following key principles for long-term maintainability:
 * **Separation of concerns**:
     * Isolation between gameplay and metagame.
-    * Isolation between UI and UnityEngine heavy-weight APIs (like MonoBehavior and Addressables) from the core of the code.
+    * Isolation between UI and UnityEngine heavy-weight APIs (like `MonoBehavior` and `Addressables`) from the core of the code.
 * **Resource management**: Efficient control over memory and resource usages (like not have metagame UI loaded during gameplay and vice-versa).
 * **SOLID principles**: By leveraging abstraction layers and interfaces.
 * **Scalability**:
@@ -25,7 +28,7 @@ For further details, refer to the [Project Details](#project-details).
 * The gameplay core logic, although independent from heavy-weight Unity APIs, was not extracted to a separate `.asmdef` for simplicity.
 * Some systems could be broken down further to keep responsibilities small and improve on testability
 * There's no loading screen pre-loaded in the scene to avoid transition gaps between splash screen and UI.
-* Assuming the simplicity of the game, UI unresponsiveness related to just-in-time loading of UI views were ignored.
+* Assuming the simplicity of the game, UI unresponsiveness related to just-in-time loading of UI views were considered negligible and ignored.
 
 **AI Disclaimer**: The Cursor IDE was used to develop this project. AI was used for simple/boilerplate code completion and to execute pre-planned refactors. AI was not used to implement logic, neither define or implement the code architecture and key concepts.  
 
@@ -53,7 +56,7 @@ Assets/
     └── com.company.utilities/  # Shared utilities
 ```
 
-This structure keeps related functionality and assets together, making feature development and maintenance more atomic/manageable.
+This structure keeps related functionality and assets together, making feature development and maintenance more atomic/manageable. The trade-off here is that this is a less common structure, and might require more frequent movement of assets as they start getting reused by different features.
 
 ### Code Architecture
 
@@ -93,6 +96,8 @@ For navigation, it leverages `Tasks` and the `IDisposable` interface to abstract
 
 For gameplay visuals, a similar setup as for the rest of the code was done, where code for visuals were kept completely unreferenced by the simulation code. The exception here was that the presentation layer was bypassed. In practice, having this additional layer hinders development speed, and might not be worth the effort (see `ICameraGroup` and `IInputProvider` flows as two different examples).
 
+In order to create smooth transitions when looping objects through the world in a simple manner, a setup with five cameras was used: center, top, bottom, left and right.
+
 
 #### Gameplay Simulation
 
@@ -104,7 +109,7 @@ The main challenge here was to leverage Unity's physics system without exposing 
 
 The gameplay also includes an example of lightweight unit tests for the `ShipSystem`.
 
-The entry point for the gameplay is the `GameplayFactory` class, which loads asset dependencies, instantiate objects and create a disposable object.
+The entry point for the gameplay is the `GameplayFactory` class, which loads asset dependencies, instantiate objects and create a disposable object. The game is fully data-driven, with a `GameConfig` struct and a `ScriptableObject` `GameConfigAsset`.
 
 Finally, the gameplay leverages object pools to minimize object instantiation during gameplay.
 
@@ -118,11 +123,15 @@ There are two types of usage in the project:
 
 The UI and Gameplay layers are the only ones that interact with it directly through `AssetLibrary` classes (i.e.: `GameplayAssetLibrary` and `GameplayUIAssetLibrary`).
 
+#### Local Packages
+
+The project has an example `com.company.utilities` package that was created to illustrate how its setup works. Being just an example, it actually constains unrelated functionalities that could in practice be their own packages.
+
 ## Appendix
 
 ### Gameplay requirements
 
-The following requirements were identified by looking at the [Asteroids' Wikipedia page](https://en.wikipedia.org/wiki/Asteroids_(video_game)) and playing existing browser versions of the game.
+The following requirements were identified by looking at the [Asteroids' Wikipedia page](https://en.wikipedia.org/wiki/Asteroids_(video_game)) and playing existing browser versions of the game. ~~Striked-through~~ items weren't implemented in this project to reduce scope.
 
 * Waves:
     * Spawn instantly 4 asteroids, and increases by 1 each wave
