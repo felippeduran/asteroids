@@ -26,6 +26,8 @@ namespace Application.Runtime
             Logger.logger = new UnityLogger();
 #endif
 
+            Screen.SetResolution(Screen.height, Screen.height, false);
+
             await Addressables.InitializeAsync();
 
             var exitToken = UnityApplication.exitCancellationToken;
