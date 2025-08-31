@@ -125,7 +125,7 @@ The UI and Gameplay layers are the only ones that interact with it directly thro
 
 #### Local Packages
 
-The project has an example `com.company.utilities` package that was created to illustrate how its setup works. Being just an example, it actually constains unrelated functionalities that could in practice be their own packages.
+The project has an example `com.company.utilities` package that was created to illustrate how its setup works. Being just an example, it actually contains unrelated functionalities that could in practice be their own packages.
 
 ## Appendix
 
