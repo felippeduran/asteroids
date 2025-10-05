@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
+using Company.Utilities.Unity;
 
 namespace Gameplay.UI.Runtime
 {
@@ -17,14 +18,14 @@ namespace Gameplay.UI.Runtime
 
         Camera[] AllCameras => new Camera[] { Center, Top, Bottom, Left, Right };
 
-        public void SetWorldSize(Vector2 worldSize)
+        public void SetWorldSize(System.Numerics.Vector2 worldSize)
         {
             foreach (var camera in AllCameras)
             {
-                camera.orthographicSize = worldSize.y / 2f;
-                camera.aspect = worldSize.x / worldSize.y;
+                camera.orthographicSize = worldSize.Y / 2f;
+                camera.aspect = worldSize.X / worldSize.Y;
             }
-            UpdateCameraPositions(worldSize);
+            UpdateCameraPositions(worldSize.ToUnity());
         }
 
         public void Dispose()

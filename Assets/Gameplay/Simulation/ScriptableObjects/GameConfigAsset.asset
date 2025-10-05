@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: GameConfigAsset
   m_EditorClassIdentifier: 
   GameConfig:
-    WorldSize: {x: 30, y: 30}
+    WorldSize:
+      X: 30
+      Y: 30
     Lives:
       InitialLives: 3
       ScoreForExtraLife: 10000

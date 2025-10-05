@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+using System.Numerics;
 using Company.Utilities.Runtime;
 using Logger = Company.Utilities.Runtime.Logger;
 
@@ -47,7 +47,7 @@ namespace Gameplay.Simulation.Runtime
         {
             foreach (var bullet in existingBullets)
             {
-                bullet.TotalTraveledDistance += bullet.LinearVelocity.magnitude * deltaTime;
+                bullet.TotalTraveledDistance += bullet.LinearVelocity.Magnitude() * deltaTime;
             }
         }
 

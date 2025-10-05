@@ -1,19 +1,45 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 using Company.Utilities.Runtime;
 
 namespace Gameplay.Simulation.Runtime
 {
-    public class GameplayFactory
+    public interface IGameplayAssetLibrary
     {
-        readonly GameplayAssetLibrary assetLibrary;
+        Task<IGameplayAssets> LoadAllAsync();
+    }
+
+    public interface IPhysicsFactory
+    {
+        INearbyPlayerFinder CreateNearbyPlayerFinder();
+    }
+
+    public interface IGameplayAssets
+    {
+        public IObjectPool<IShip> Ships { get; init; }
+        public IObjectPool<IAsteroid> Asteroids { get; init; }
+        public IObjectPool<IBullet> Bullets { get; init; }
+        public IObjectPool<ISaucer> Saucers { get; init; }
+
+        IGameplay CreateGameplay(GameState gameState, GameConfig gameConfig, GameSystems gameSystems);
+    }
+
+    public interface IGameplayFactory
+    {
+        Task<IGameplay> CreateAsync(IInputProvider inputProvider, ICameraGroup cameraGroup);
+    }
+
+    public class GameplayFactory : IGameplayFactory
+    {
+        readonly IGameplayAssetLibrary assetLibrary;
+        readonly IPhysicsFactory physicsFactory;
         readonly GameConfig gameConfig;
 
-        public GameplayFactory(GameplayAssetLibrary assetLibrary, GameConfig gameConfig)
+        public GameplayFactory(IGameplayAssetLibrary assetLibrary, IPhysicsFactory physicsFactory, GameConfig gameConfig)
         {
             this.assetLibrary = assetLibrary;
+            this.physicsFactory = physicsFactory;
             this.gameConfig = gameConfig;
         }
 
@@ -21,9 +47,9 @@ namespace Gameplay.Simulation.Runtime
         {
             var assets = await assetLibrary.LoadAllAsync();
 
-            var playerShip = GameObject.Instantiate(assets.Ship);
+            var playerShip = assets.Ships.Get();
 
-            playerShip.Position = new Vector2(0, 0);
+            playerShip.Position = new System.Numerics.Vector2(0, 0);
             playerShip.IsTeamPlayer = true;
             playerShip.IsDestroyed = false;
             playerShip.Ammo = gameConfig.Ship.MaxAmmo;
@@ -45,37 +71,19 @@ namespace Gameplay.Simulation.Runtime
                 Bullets = new List<IBullet>(),
             };
 
-            var asteroidsPool = new ObjectPool<IAsteroid, Asteroid>(assets.Asteroid);
-            var bulletsPool = new ObjectPool<IBullet, Bullet>(assets.Bullet);
-            var saucersPool = new ObjectPool<ISaucer, Saucer>(assets.Saucer);
-
             var gameSystems = new GameSystems
             {
                 ShipSystem = new ShipSystem(inputProvider),
-                BulletsSystem = new BulletsSystem(bulletsPool),
-                SaucersSystem = new SaucersSystem(saucersPool),
-                AsteroidsSystem = new AsteroidsSystem(asteroidsPool),
+                BulletsSystem = new BulletsSystem(assets.Bullets),
+                SaucersSystem = new SaucersSystem(physicsFactory.CreateNearbyPlayerFinder(), assets.Saucers),
+                AsteroidsSystem = new AsteroidsSystem(assets.Asteroids),
                 WorldLoopSystem = new WorldLoopSystem(),
                 ExtraLifeSystem = new ExtraLifeSystem()
             };
 
             cameraGroup.SetWorldSize(gameConfig.WorldSize);
 
-            var gameLoopObject = new GameObject("GameLoop");
-            var bootstrap = gameLoopObject.AddComponent<GameplayLoop>();
-
-            var disposer = new BatchDisposer(
-                asteroidsPool,
-                bulletsPool,
-                saucersPool,
-                new DisposableGameObject(playerShip.gameObject),
-                new DisposableGameObject(gameLoopObject),
-                assets
-            );
-
-            bootstrap.Setup(gameState, gameConfig, gameSystems, disposer);
-
-            return bootstrap;
+            return assets.CreateGameplay(gameState, gameConfig, gameSystems);
         }
     }
 }

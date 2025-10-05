@@ -1,4 +1,4 @@
-using UnityEngine;
+using System.Numerics;
 
 namespace Company.Utilities.Runtime
 {
@@ -28,7 +28,7 @@ namespace Company.Utilities.Runtime
 
         public Vector2 NextDirection()
         {
-            return (new Vector2((float)random.NextDouble(), (float)random.NextDouble()) - 0.5f * Vector2.one).normalized;
+            return Vector2.Normalize(new Vector2((float)random.NextDouble(), (float)random.NextDouble()) - 0.5f * Vector2.One);
         }
 
         public Vector2 InsideUnitCircle()
@@ -40,8 +40,9 @@ namespace Company.Utilities.Runtime
         {
             var random = new Random();
             var randomAngle = random.Range(-angle / 2, angle / 2);
-            var randomDirection = Quaternion.Euler(0, 0, randomAngle) * linearVelocity.normalized;
-            return randomDirection;
+            linearVelocity = Vector2.Normalize(linearVelocity);
+            var quaternion = Quaternion.CreateFromYawPitchRoll(0, 0, (float)(randomAngle * (System.Math.PI / 180f)));
+            return Vector2.Transform(linearVelocity, quaternion);
         }
     }
 }

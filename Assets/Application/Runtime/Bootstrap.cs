@@ -1,12 +1,13 @@
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
+using Gameplay.Simulation.Unity;
 using Gameplay.UI.Runtime;
 using Metagame.UI.Runtime;
-using UnityApplication = UnityEngine.Application;
-using Company.Utilities.Runtime;
-using Logger = Company.Utilities.Runtime.Logger;
 using Metagame.Presentation.Runtime;
 using Gameplay.Presentation.Runtime;
+using Company.Utilities.Unity;
+using UnityApplication = UnityEngine.Application;
+using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Application.Runtime
 {
@@ -37,7 +38,8 @@ namespace Application.Runtime
                 var play = await mainMenuPresenter.PresentAsync(exitToken);
                 if (play)
                 {
-                    var gameplayFactory = new GameplayFactory(gameplayAssetLibrary, gameConfigAsset.GameConfig);
+                    var physicsFactory = new PhysicsFactory();
+                    var gameplayFactory = new GameplayFactory(gameplayAssetLibrary, physicsFactory, gameConfigAsset.GameConfig);
 
                     await new GameplayPresenter(gameplayUIAssetLibrary, gameplayFactory).PresentAsync(exitToken);
                 }

@@ -1,18 +1,19 @@
 using System;
-using UnityEngine;
+using System.Numerics;
+using Company.Utilities.Runtime;
 
 namespace Gameplay.Simulation.Runtime
 {
     [Serializable]
     public struct GameConfig
     {
-        public Vector2 WorldSize;
+        public SerializableVector2 WorldSize;
         public LivesConfig Lives;
         public ShipConfig Ship;
         public AsteroidsConfig Asteroids;
         public BulletsConfig Bullets;
         public SaucersConfig Saucers;
-        public readonly Bounds WorldBounds => new Bounds(Vector2.zero, WorldSize);
+        public readonly Bounds WorldBounds => new Bounds(Vector2.Zero, WorldSize);
     }
 
     [Serializable]

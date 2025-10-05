@@ -4,7 +4,7 @@ using Company.Utilities.Runtime;
 
 namespace Metagame.Presentation.Runtime
 {
-    public interface IMetagameAssetLibrary
+    public interface IMetagameUIAssetLibrary
     {
         Task<IDisposableInstanceHandle<IMainMenuView>> CreateMainMenuViewAsync();
     }
@@ -16,9 +16,9 @@ namespace Metagame.Presentation.Runtime
 
     public class MainMenuPresenter
     {
-        readonly IMetagameAssetLibrary metagameAssetLibrary;
+        readonly IMetagameUIAssetLibrary metagameAssetLibrary;
 
-        public MainMenuPresenter(IMetagameAssetLibrary metagameAssetLibrary)
+        public MainMenuPresenter(IMetagameUIAssetLibrary metagameAssetLibrary)
         {
             this.metagameAssetLibrary = metagameAssetLibrary;
         }

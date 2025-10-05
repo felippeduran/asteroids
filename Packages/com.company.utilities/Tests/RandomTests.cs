@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using UnityEngine;
+using System.Numerics;
 using System.Linq;
-using Random = Company.Utilities.Runtime.Random;
+using Company.Utilities.Runtime;
 
 namespace Company.Utilities.Tests
 {
@@ -61,7 +61,7 @@ namespace Company.Utilities.Tests
                 results[i] = new Random().NextDirection();
             }
 
-            Assert.IsTrue(results.All(r => Mathf.Abs(r.magnitude - 1.0f) < 0.001f), "All NextDirection results should be normalized");
+            Assert.IsTrue(results.All(r => System.Math.Abs(r.Magnitude() - 1.0f) < 0.001f), "All NextDirection results should be normalized");
         }
 
         [Test]
@@ -73,13 +73,13 @@ namespace Company.Utilities.Tests
                 results[i] = new Random().InsideUnitCircle();
             }
 
-            Assert.IsTrue(results.All(r => r.magnitude <= 1.0f), "All InsideUnitCircle results should be within unit circle");
+            Assert.IsTrue(results.All(r => r.Magnitude() <= 1.0f), "All InsideUnitCircle results should be within unit circle");
         }
 
         [Test]
         public void GetRandomDirectionFromCone_WithZeroAngle_ReturnsOriginalDirection()
         {
-            Vector2 linearVelocity = Vector2.right;
+            Vector2 linearVelocity = Vector2.UnitX;
             float angle = 0f;
 
             var results = new Vector2[TestIterations];
@@ -94,7 +94,7 @@ namespace Company.Utilities.Tests
         [Test]
         public void GetRandomDirectionFromCone_ReturnsDirectionWithinCone()
         {
-            Vector2 linearVelocity = Vector2.right;
+            Vector2 linearVelocity = Vector2.UnitX;
             float angle = 30f;
 
             var results = new Vector2[TestIterations];
@@ -104,17 +104,17 @@ namespace Company.Utilities.Tests
             }
 
             Assert.IsTrue(results.All(r => {
-                float angleBetween = Vector2.Angle(linearVelocity, r);
+                float angleBetween = NumericsExtensions.Angle(linearVelocity, r);
                 return angleBetween <= angle / 2f;
             }), "All results should be within the specified cone angle");
             
-            Assert.IsTrue(results.All(r => Mathf.Abs(r.magnitude - 1.0f) < 0.001f), "All results should be normalized");
+            Assert.IsTrue(results.All(r => System.Math.Abs(r.Magnitude() - 1.0f) < 0.001f), "All results should be normalized");
         }
 
         [Test]
         public void GetRandomDirectionFromCone_ResultIsNormalized()
         {
-            Vector2 linearVelocity = Vector2.right;
+            Vector2 linearVelocity = Vector2.UnitX;
             float angle = 60f;
 
             var results = new Vector2[TestIterations];
@@ -123,7 +123,7 @@ namespace Company.Utilities.Tests
                 results[i] = new Random().GetRandomDirectionFromCone(linearVelocity, angle);
             }
 
-            Assert.IsTrue(results.All(r => Mathf.Abs(r.magnitude - 1.0f) < 0.001f), "All results should be normalized");
+            Assert.IsTrue(results.All(r => System.Math.Abs(r.Magnitude() - 1.0f) < 0.001f), "All results should be normalized");
         }
     }
 }

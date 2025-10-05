@@ -1,6 +1,7 @@
+using System.Numerics;
 using NUnit.Framework;
-using UnityEngine;
 using Gameplay.Simulation.Runtime;
+using Company.Utilities.Runtime;
 
 namespace Gameplay.Simulation.Tests
 {
@@ -62,7 +63,7 @@ namespace Gameplay.Simulation.Tests
         {
             var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
-            var fakeShip = new FakeShip { Forward = Vector2.up };
+            var fakeShip = new FakeShip { Forward = Vector2.UnitY };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput { Thrust = true };
 
@@ -70,7 +71,7 @@ namespace Gameplay.Simulation.Tests
             CreateShipSystem(input).UpdateShip(kDeltaTime, fakeShip, ref playerState, shipConfig, worldBounds);
 
             // Assert
-            Assert.AreEqual(shipConfig.ThrustForce * Vector2.up, fakeShip.ThrustForce);
+            Assert.AreEqual(shipConfig.ThrustForce * Vector2.UnitY, fakeShip.ThrustForce);
         }
 
         [Test]
@@ -80,8 +81,8 @@ namespace Gameplay.Simulation.Tests
             var worldBounds = TestUtilities.CreateWorldBounds();
             var fakeShip = new FakeShip
             {
-                Position = Vector2.one,
-                Forward = Vector2.up,
+                Position = Vector2.One,
+                Forward = Vector2.UnitY,
                 Ammo = 1,
                 AmmoReloadCooldown = 1f
             };
@@ -198,7 +199,7 @@ namespace Gameplay.Simulation.Tests
         {
             var shipConfig = CreateShipConfig();
             var worldBounds = TestUtilities.CreateWorldBounds();
-            var fakeShip = new FakeShip { Forward = Vector2.up, Ammo = 1 };
+            var fakeShip = new FakeShip { Forward = Vector2.UnitY, Ammo = 1 };
             var playerState = new PlayerState { Lives = 3 };
             var input = new PlayerInput 
             { 
@@ -212,7 +213,7 @@ namespace Gameplay.Simulation.Tests
 
             // Assert
             Assert.AreEqual(shipConfig.TurnSpeed, fakeShip.AngularVelocity);
-            Assert.AreEqual(shipConfig.ThrustForce * Vector2.up, fakeShip.ThrustForce);
+            Assert.AreEqual(shipConfig.ThrustForce * Vector2.UnitY, fakeShip.ThrustForce);
             Assert.AreEqual(1, bulletsFired.Length);
         }
 
@@ -284,8 +285,8 @@ namespace Gameplay.Simulation.Tests
             Assert.IsFalse(playerState.Reviving);
             Assert.IsFalse(fakeShip.IsDestroyed);
             Assert.IsTrue(fakeShip.IsActive);
-            Assert.AreEqual(Vector2.zero, fakeShip.Position);
-            Assert.AreEqual(Vector2.up, fakeShip.Forward);
+            Assert.AreEqual(Vector2.Zero, fakeShip.Position);
+            Assert.AreEqual(Vector2.UnitY, fakeShip.Forward);
         }
 
         [Test]
@@ -417,7 +418,7 @@ namespace Gameplay.Simulation.Tests
             public bool IsTeamPlayer { get; set; }
             public Vector2 ThrustForce { get; set; }
             public float AngularVelocity { get; set; }
-            public bool IsThrusting => ThrustForce.magnitude > Mathf.Epsilon;
+            public bool IsThrusting => ThrustForce.Magnitude() > float.Epsilon;
             public Vector2 BulletSpawnPosition => Position + Forward;
             public int Ammo { get; set; }
             public float AmmoReloadCooldown { get; set; }

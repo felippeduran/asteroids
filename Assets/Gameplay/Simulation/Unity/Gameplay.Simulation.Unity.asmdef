@@ -1,0 +1,19 @@
+{
+    "name": "Gameplay.Simulation.Unity",
+    "rootNamespace": "Gameplay.Simulation.Unity",
+    "references": [
+        "Gameplay.Simulation.Runtime",
+        "Company.Utilities.Runtime",
+        "Company.Utilities.Unity",
+        "Unity.Addressables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

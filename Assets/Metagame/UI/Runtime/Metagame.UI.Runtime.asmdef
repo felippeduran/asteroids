@@ -4,6 +4,7 @@
     "references": [
         "Metagame.Presentation.Runtime",
         "Company.Utilities.Runtime",
+        "Company.Utilities.Unity",
         "Unity.Addressables"
     ],
     "includePlatforms": [],

@@ -6,7 +6,7 @@ using Company.Utilities.Runtime;
 
 namespace Gameplay.Presentation.Runtime
 {
-    public interface IGameplayAssetLibrary
+    public interface IGameplayUIAssetLibrary
     {
         Task<IDisposableInstanceHandle<ICameraGroup>> CreateCameraGroupAsync();
         Task<IDisposableInstanceHandle<IGameplayView>> CreateGameplayViewAsync();
@@ -36,10 +36,10 @@ namespace Gameplay.Presentation.Runtime
 
     public class GameplayPresenter
     {
-        readonly IGameplayAssetLibrary assetLibrary;
-        readonly GameplayFactory gameplayFactory;
+        readonly IGameplayUIAssetLibrary assetLibrary;
+        readonly IGameplayFactory gameplayFactory;
 
-        public GameplayPresenter(IGameplayAssetLibrary assetLibrary, GameplayFactory gameplayFactory)
+        public GameplayPresenter(IGameplayUIAssetLibrary assetLibrary, IGameplayFactory gameplayFactory)
         {
             this.assetLibrary = assetLibrary;
             this.gameplayFactory = gameplayFactory;

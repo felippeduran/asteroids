@@ -1,7 +1,8 @@
-using UnityEngine;
+using System;
+using System.Numerics;
+using Company.Utilities.Runtime;
 using Random = Company.Utilities.Runtime.Random;
 using Logger = Company.Utilities.Runtime.Logger;
-using System;
 
 namespace Gameplay.Simulation.Runtime
 {
@@ -74,7 +75,7 @@ namespace Gameplay.Simulation.Runtime
         Vector2 GetRandomPositionInsideBounds(Bounds worldBounds)
         {
             var random = new Random();
-            return new Vector2(random.NextFloat() * worldBounds.size.x, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
+            return new Vector2(random.NextFloat() * worldBounds.Size.X, random.NextFloat() * worldBounds.Size.Y) - new Vector2(worldBounds.Size.X, worldBounds.Size.Y) / 2;
         }
 
 
@@ -154,7 +155,7 @@ namespace Gameplay.Simulation.Runtime
         void ReviveShip(IShip ship, ShipConfig shipConfig)
         {
             ship.Position = new Vector2(0, 0);
-            ship.Forward = Vector2.up;
+            ship.Forward = Vector2.UnitY;
             ship.Ammo = shipConfig.MaxAmmo;
             ship.AmmoReloadCooldown = 0f;
             ship.FireCooldown = 0f;

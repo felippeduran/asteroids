@@ -3,11 +3,13 @@
     "rootNamespace": "Application.Runtime",
     "references": [
         "Gameplay.Simulation.Runtime",
+        "Gameplay.Simulation.Unity",
         "Gameplay.UI.Runtime",
         "Metagame.UI.Runtime",
         "Gameplay.Presentation.Runtime",
         "Metagame.Presentation.Runtime",
-        "Company.Utilities.Runtime"
+        "Company.Utilities.Runtime",
+        "Company.Utilities.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

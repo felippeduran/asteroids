@@ -5,11 +5,12 @@ using UnityEngine.AddressableAssets;
 using Gameplay.Simulation.Runtime;
 using Gameplay.Presentation.Runtime;
 using Company.Utilities.Runtime;
+using Company.Utilities.Unity;
 
 namespace Gameplay.UI.Runtime
 {
     [CreateAssetMenu(fileName = "GameplayUIAssetLibrary", menuName = "Gameplay/GameplayUIAssetLibrary")]
-    public class GameplayUIAssetLibrary : ScriptableObject, IGameplayAssetLibrary
+    public class GameplayUIAssetLibrary : ScriptableObject, IGameplayUIAssetLibrary
     {
         [SerializeField] AssetReferenceGameObject camerasAsset;
         [SerializeField] AssetReferenceGameObject gameplayViewAsset;

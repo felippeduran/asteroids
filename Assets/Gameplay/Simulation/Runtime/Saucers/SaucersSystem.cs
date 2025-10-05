@@ -1,20 +1,31 @@
+using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Company.Utilities.Runtime;
 using Random = Company.Utilities.Runtime.Random;
 using Logger = Company.Utilities.Runtime.Logger;
 
 namespace Gameplay.Simulation.Runtime
 {
+    public struct NearbyPlayer
+    {
+        public Vector2 Position;
+    }
+
+    public interface INearbyPlayerFinder
+    {
+        bool FindNearbyPlayer(Vector2 origin, float radius, Vector2 direction, out NearbyPlayer nearbyPlayer);
+    }
+
     public class SaucersSystem
     {
+        readonly INearbyPlayerFinder nearbyPlayerFinder;
         readonly IObjectPool<ISaucer> saucersPool;
         readonly Random random;
-        readonly RaycastHit2D[] raycasHits = new RaycastHit2D[5];
 
-        public SaucersSystem(IObjectPool<ISaucer> saucersPool)
+        public SaucersSystem(INearbyPlayerFinder nearbyPlayerFinder, IObjectPool<ISaucer> saucersPool)
         {
+            this.nearbyPlayerFinder = nearbyPlayerFinder;
             this.saucersPool = saucersPool;
             this.random = new Random();
         }
@@ -56,27 +67,19 @@ namespace Gameplay.Simulation.Runtime
                 var saucerConfig = saucersConfig.Saucers.GetSaucerConfigFor(saucer.Type);
                 if (saucer.ShootCooldown < 0f)
                 {
-                     Logger.Log($"Try shoot {saucer.Type} saucer");
+                    Logger.Log($"Try shoot {saucer.Type} saucer");
                     saucer.ShootCooldown = 1f / saucerConfig.Aim.FireRate;
 
-                    var filter = new ContactFilter2D {
-                        useTriggers = true,
-                        useLayerMask = true,
-                        layerMask = LayerMask.GetMask("Player")
-                    };
-                    var count = Physics2D.CircleCast(saucer.Position, saucerConfig.Aim.SightDistance, Vector2.one, filter, raycasHits, 0f);
-                    if (count > 0)
+                    if (nearbyPlayerFinder.FindNearbyPlayer(saucer.Position, saucerConfig.Aim.SightDistance, Vector2.One, out var nearbyPlayer))
                     {
-                        Logger.Log($"Found {count} targets");
                         var random = new Random();
-                        var hit = raycasHits[random.Range(0, count)];
-                        var targetPosition = hit.rigidbody.transform.position;
+                        var targetPosition = nearbyPlayer.Position;
 
-                        var fireAnchorPosition = saucer.ShootRing.Position;
-                        var direction = (new Vector2(targetPosition.x, targetPosition.y) - fireAnchorPosition).normalized;
+                        var fireAnchorPosition = saucer.GunAnchorPosition;
+                        var direction = Vector2.Normalize(targetPosition - fireAnchorPosition);
 
                         var finalDirection = random.GetRandomDirectionFromCone(direction, saucerConfig.Aim.FireAngle);
-                        var startPosition = fireAnchorPosition + finalDirection * saucer.ShootRing.Radius;
+                        var startPosition = saucer.GetGunTipForDirection(finalDirection);
                         bulletsFired.Add(new FireBulletData
                         {
                             Position = startPosition,
@@ -108,7 +111,7 @@ namespace Gameplay.Simulation.Runtime
                             _ => -1f
                         };
 
-                        saucer.LinearVelocity = new Vector2(Mathf.Sign(saucer.LinearVelocity.x), newVerticalComponent).normalized * saucerConfig.Movement.Speed;
+                        saucer.LinearVelocity = Vector2.Normalize(new Vector2(System.Math.Sign(saucer.LinearVelocity.X), newVerticalComponent)) * saucerConfig.Movement.Speed;
                     }
                 }
             }
@@ -119,12 +122,12 @@ namespace Gameplay.Simulation.Runtime
             var saucersToRemove = new List<ISaucer>();
             foreach (var saucer in existingSaucers)
             {
-                if (saucer.LinearVelocity.x > 0 && saucer.Position.x > worldBounds.max.x)
+                if (saucer.LinearVelocity.X > 0 && saucer.Position.X > worldBounds.Max.X)
                 {
                     Logger.Log($"Saucer {saucer.Type} crossed the screen on the right");
                     saucersToRemove.Add(saucer);
                 }
-                else if (saucer.LinearVelocity.x < 0 && saucer.Position.x < worldBounds.min.x)
+                else if (saucer.LinearVelocity.X < 0 && saucer.Position.X < worldBounds.Min.X)
                 {
                     Logger.Log($"Saucer {saucer.Type} crossed the screen on the left");
                     saucersToRemove.Add(saucer);
@@ -163,7 +166,7 @@ namespace Gameplay.Simulation.Runtime
             saucer.Type = saucerConfig.Type;
 
             var direction = random.NextFloat() > 0.5f ? 1 : -1;
-            saucer.Position = new Vector2(direction < 0f ? worldBounds.size.x : 0, random.NextFloat() * worldBounds.size.y) - new Vector2(worldBounds.size.x, worldBounds.size.y) / 2;
+            saucer.Position = new Vector2(direction < 0f ? worldBounds.Size.X : 0, random.NextFloat() * worldBounds.Size.Y) - new Vector2(worldBounds.Size.X, worldBounds.Size.Y) / 2;
             saucer.LinearVelocity = new Vector2(direction, 0) * saucerConfig.Movement.Speed;
             saucer.TurnCooldown = random.NextFloat() * saucerConfig.Movement.TurnCooldown;
             saucer.IsDestroyed = false;

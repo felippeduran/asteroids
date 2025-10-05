@@ -1,4 +1,4 @@
-using UnityEngine;
+using System.Numerics;
 using Company.Utilities.Runtime;
 
 namespace Gameplay.Simulation.Runtime
@@ -12,6 +12,7 @@ namespace Gameplay.Simulation.Runtime
         bool IsTeamPlayer { get; set; }
         float TurnCooldown { get; set; }
         float ShootCooldown { get; set; }
-        Saucer.ShootRingData ShootRing { get; }
+        public Vector2 GunAnchorPosition { get; }
+        public Vector2 GetGunTipForDirection(Vector2 direction);
     }
 }

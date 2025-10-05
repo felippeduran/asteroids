@@ -1,4 +1,5 @@
-using UnityEngine;
+
+using System.Numerics;
 using System.Collections.Generic;
 
 namespace Gameplay.Simulation.Runtime
@@ -29,24 +30,24 @@ namespace Gameplay.Simulation.Runtime
 
         Vector2 GetLoopedPosition(Vector2 position, Bounds bounds)
         {
-            float xPosition = position.x;
-            if (position.x > bounds.max.x)
+            float xPosition = position.X;
+            if (position.X > bounds.Max.X)
             {
-                xPosition = bounds.min.x + (position.x - bounds.max.x);
+                xPosition = bounds.Min.X + (position.X - bounds.Max.X);
             }
-            else if (position.x < bounds.min.x)
+            else if (position.X < bounds.Min.X)
             {
-                xPosition = bounds.max.x - (bounds.min.x - position.x);
+                xPosition = bounds.Max.X - (bounds.Min.X - position.X);
             }
 
-            float yPosition = position.y;
-            if (position.y > bounds.max.y)
+            float yPosition = position.Y;
+            if (position.Y > bounds.Max.Y)
             {
-                yPosition = bounds.min.y + (position.y - bounds.max.y);
+                yPosition = bounds.Min.Y + (position.Y - bounds.Max.Y);
             }
-            else if (position.y < bounds.min.y)
+            else if (position.Y < bounds.Min.Y)
             {
-                yPosition = bounds.max.y - (bounds.min.y - position.y);
+                yPosition = bounds.Max.Y - (bounds.Min.Y - position.Y);
             }
 
             return new Vector2(xPosition, yPosition);

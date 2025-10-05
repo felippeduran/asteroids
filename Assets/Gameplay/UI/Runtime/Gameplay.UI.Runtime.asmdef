@@ -5,6 +5,7 @@
         "Gameplay.Simulation.Runtime",
         "Gameplay.Presentation.Runtime",
         "Company.Utilities.Runtime",
+        "Company.Utilities.Unity",
         "Unity.TextMeshPro",
         "Unity.Addressables"
     ],
