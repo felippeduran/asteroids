@@ -1,11 +1,11 @@
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
-using Gameplay.Simulation.Unity;
+using Gameplay.Simulation.Runtime.Unity;
 using Gameplay.UI.Runtime;
 using Metagame.UI.Runtime;
 using Metagame.Presentation.Runtime;
 using Gameplay.Presentation.Runtime;
-using Company.Utilities.Unity;
+using Company.Utilities.Runtime.Unity;
 using UnityApplication = UnityEngine.Application;
 using Logger = Company.Utilities.Runtime.Logger;
 

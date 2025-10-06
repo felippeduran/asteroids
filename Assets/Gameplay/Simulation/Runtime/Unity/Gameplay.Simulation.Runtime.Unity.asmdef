@@ -1,15 +1,11 @@
 {
-    "name": "Application.Runtime",
-    "rootNamespace": "Application.Runtime",
+    "name": "Gameplay.Simulation.Runtime.Unity",
+    "rootNamespace": "Gameplay.Simulation.Runtime.Unity",
     "references": [
         "Gameplay.Simulation.Runtime",
-        "Gameplay.Simulation.Runtime.Unity",
-        "Gameplay.UI.Runtime",
-        "Metagame.UI.Runtime",
-        "Gameplay.Presentation.Runtime",
-        "Metagame.Presentation.Runtime",
         "Company.Utilities.Runtime",
-        "Company.Utilities.Runtime.Unity"
+        "Company.Utilities.Runtime.Unity",
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

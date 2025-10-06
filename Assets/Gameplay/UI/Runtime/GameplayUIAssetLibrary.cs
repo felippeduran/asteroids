@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 using Gameplay.Simulation.Runtime;
 using Gameplay.Presentation.Runtime;
 using Company.Utilities.Runtime;
-using Company.Utilities.Unity;
+using Company.Utilities.Runtime.Unity;
 
 namespace Gameplay.UI.Runtime
 {

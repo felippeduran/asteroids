@@ -7,7 +7,7 @@ The game works with a single `Scene` called `ApplicationScene.scene`. The entry 
 > **Important**:
 > * Make sure to build `Addressables` if running without the Asset Database.
 > * This project uses **Git LFS**, make sure to configure it properly.
-> * This project was implemented using **Unity 6000.0.48f1**
+> * This project was implemented using **Unity 6000.0.58f2**
 
 ## Overview
 
@@ -29,6 +29,7 @@ For further details, refer to the [Project Details](#project-details).
 * Some systems could be broken down further to keep responsibilities small and improve on testability
 * There's no loading screen pre-loaded in the scene to avoid transition gaps between splash screen and UI.
 * Assuming the simplicity of the game, UI unresponsiveness related to just-in-time loading of UI views were considered negligible and ignored.
+* Considering the scope and simplicity of UI flows, the implementation of a navigation framework was unnecessary.
 
 **AI Disclaimer**: The Cursor IDE was used to develop this project. AI was used for simple/boilerplate code completion and to execute pre-planned refactors. AI was not used to implement logic, neither define or implement the code architecture and key concepts.  
 
@@ -40,43 +41,91 @@ The project follows a feature-based organization where each major feature contai
 
 ```
 Assets/
-├── Application/                # Game initialization and game<->metagame flow control
-│   ├── Runtime/                # Runtime source code with its own `.asmdef`
+├── Application/                            # Game initialization and game<->metagame flow control
+│   ├── Runtime/                            # Runtime source code with its own `.asmdef`
 │   └── Scenes/
 ├── Gameplay/
-│   ├── Simulation/             # Game logic and systems
+│   ├── Simulation/                         # Game logic and systems
 │   │   ├── Prefabs/
-│   │   ├── Runtime/
-│   │   ├── ScriptableObjects/        
-│   │   └── Tests/              # Tests source code with its own `.asmdef`
-│   ├── Presentation/           # Unity integration layer
-│   └── UI/                     # Gameplay UI components
-├── Metagame/                   # Main Menu and metagame flow
+│   │   ├── Runtime/                        # Pure game logic (Unity-independent)
+│   │   │   ├── Asteroids/                  # Asteroid spawning and management
+│   │   │   ├── Bullets/                    # Bullet system and configuration
+│   │   │   ├── Player/                     # Player state and extra lives
+│   │   │   ├── Saucers/                    # Flying saucer AI and behavior
+│   │   │   ├── Ships/                      # Ship controls and input handling
+│   │   │   ├── Shared/                     # Common game state and systems
+│   │   │   └── Unity/                      # Unity-specific components and integration
+│   │   │       ├── Components/             # MonoBehaviour components
+│   │   │       ├── Physics/                # Unity physics integration
+│   │   │       └── ScriptableObjects/      # Unity ScriptableObject implementations
+│   │   ├── ScriptableObjects/
+│   │   └── Tests/                          # Tests source code with its own `.asmdef`
+│   ├── Presentation/                       # Unity integration layer
+│   ├── UI/                                 # Gameplay UI components
+│   └── Visuals/                            # Gameplay visual effects and rendering
+│       └── Runtime/                        # Visual components with their own `.asmdef`
+├── Metagame/                               # Main Menu and metagame flow
 └── Packages/
-    └── com.company.utilities/  # Shared utilities
+    └── com.company.utilities/              # Shared utilities
+        ├── Runtime/                        # Unity-independent utilities and interfaces
+        │   └── Unity/                      # Unity-specific utilities and implementations
+        └── Tests/                          # Unit tests
 ```
 
 This structure keeps related functionality and assets together, making feature development and maintenance more atomic/manageable. The trade-off here is that this is a less common structure, and might require more frequent movement of assets as they start getting reused by different features.
 
 ### Code Architecture
 
-The project implements a layered architecture inspired by Clean Architecture principles. The diagram below illustrates the main components of the project and their flow of dependencies.
+The project implements a layered architecture inspired by Clean Architecture principles. The diagram below illustrates the main components of the project and their flow of dependencies. It's interesting to note that for gameplay visuals and logic, the presentation layer was ommited to reduce development overhead.
 
 ```mermaid
-graph BT
-    B[Gameplay Presentation] --> A[Gameplay]
-    C[Gameplay UI] --> B[Gameplay Presentation]
-    C[Gameplay UI] -->|"(see gameplay visuals notes)"| A[Gameplay]
+flowchart BT
+    subgraph Core[Core]
+        GameplayRuntime[Gameplay Runtime]
+        
+        Metagame["Metagame<br>(out of scope)</br>"]
+        style Metagame stroke-dasharray: 5 5
+    end
 
-    E[Metagame Presentation] --> D["Metagame<br>(out of scope)</br>"]
-    F[Metagame UI] --> E[Metagame Presentation]
-    
-    style D stroke-dasharray: 5 5
-    linkStyle 2 stroke-dasharray: 5 5
+    subgraph Presentation[Presentation]
+        GameplayPresentation[Gameplay Presentation]
+        MetaPresentation[Metagame Presentation]
+    end
+
+    subgraph UnityIntegration[Unity Integration/UI]
+        I1:::hidden
+        I2:::hidden
+        I3:::hidden
+
+        GameplayUnity[Gameplay Unity]
+        GameplayVisuals[Gameplay Visuals]
+        GameplayUI[Gameplay UI]
+        MetaUI[Metagame UI]
+
+        GameplayVisuals --> GameplayRuntime
+        GameplayVisuals --> GameplayUnity
+        GameplayUI --> GameplayRuntime
+        MetaUI ~~~ I2
+        GameplayUI ~~~ I3
+        I3 ~~~ GameplayPresentation
+    end
+
+    GameplayPresentation --> GameplayRuntime
+    GameplayUI --> GameplayPresentation
+
+    GameplayUnity --> GameplayRuntime
+
+    MetaPresentation --> Metagame
+    MetaUI --> MetaPresentation
+
+    GameplayUnity ~~~ Presentation
+
+    classDef hidden display: none;
 ```
 
 **Key Components:**
-- **Gameplay/Metagame Layer**: Ideally pure business/game logic, independent of UI and presentation layers.
+- **Gameplay/Metagame Runtime Layer**: Pure business/game logic, completely independent of Unity APIs and UI layers.
+- **Unity Integration Layer**: Unity-specific components, MonoBehaviour classes, and Unity API integrations that depend on the Runtime layer.
 - **Presentation Layer**: Responsible for orchestrating flows and different use cases. Implements interfaces for the UI layer to implement and depends on gameplay/metagame layers.
 - **UI Layer**: UI components and code with no business logic. Views have no external dependencies apart from the interface they implement and respect the [Humble Dialog](https://martinfowler.com/articles/humble-dialog-box.html) approach.
 - **Application Layer**: Orchestrates initialization and metagame<->gameplay flow
@@ -94,22 +143,39 @@ For navigation, it leverages `Tasks` and the `IDisposable` interface to abstract
 
 #### Gameplay Visuals
 
-For gameplay visuals, a similar setup as for the rest of the code was done, where code for visuals were kept completely unreferenced by the simulation code. The exception here was that the presentation layer was bypassed. In practice, having this additional layer hinders development speed, and might not be worth the effort (see `ICameraGroup` and `IInputProvider` flows as two different examples).
+The gameplay visuals are separated into their own assembly (`Gameplay.Visuals.Runtime`) to maintain clean separation between visual and core game logic, and were kept completely unreferenced by the simulation code. Considering the layered architecture for the project, the exception here was that the presentation layer was bypassed. In practice, having this additional layer hinders development speed, and might not be worth the effort (see `ICameraGroup` and `IInputProvider` flows as two different examples).
 
 In order to create smooth transitions when looping objects through the world in a simple manner, a setup with five cameras was used: center, top, bottom, left and right.
 
 
 #### Gameplay Simulation
 
-The gameplay simulation follows a lightweight data-oriented approach of game systems and data objects. Game objects like the ship, saucers and asteroids have a main `MonoBehavior` component that exposes the "data" fields to game systems. Generally, there's one system for each kind of "feature" like asteroids, bullets, etc. Note that some concessions were made regarding single responsibility in order to limit the scope of the project.
+The gameplay simulation follows a lightweight data-oriented approach with clear separation between pure logic and Unity integration:
+
+**Runtime** (`Assets/Gameplay/Simulation/Runtime/`):
+- Pure game logic and systems independent of Unity APIs
+- Data structures, interfaces, and business logic
+- Game systems for asteroids, bullets, ships, saucers, etc.
+- No Unity dependencies, making it easily testable and portable
+
+**Unity Integration** (`Assets/Gameplay/Simulation/Runtime/Unity/`):
+- `MonoBehaviour` components that expose data fields to game systems
+- Unity-specific physics integration and visual effects
+- `ScriptableObject` implementations and asset management
+- Object pooling and lifecycle management
+- `MonoBehaviour` components for managing the gameplay visuals
+
+Game objects like the ship, saucers and asteroids have a main `MonoBehavior` component that exposes the "data" fields to game systems. Generally, there's one system for each kind of "feature" like asteroids, bullets, etc. Note that some concessions were made regarding single responsibility in order to limit the scope of the project.
 
 Besides facilitating performance optimizations, this architecture usually keeps dependency trees pretty flat and allow for easy composition of functionalities, facilitating maintenance, readability and scalability.
 
-The main challenge here was to leverage Unity's physics system without exposing it to the core logic of the gameplay. There was also the consideration of separating "visual" vs "logic" prefabs, but this can generally make content creation more complicated.
+The main challenge here was to leverage Unity's physics system without exposing it to the core logic of the gameplay. The separation between Runtime and Unity layers ensures that core game logic remains independent of Unity APIs.
 
 The gameplay also includes an example of lightweight unit tests for the `ShipSystem`.
 
 The entry point for the gameplay is the `GameplayFactory` class, which loads asset dependencies, instantiate objects and create a disposable object. The game is fully data-driven, with a `GameConfig` struct and a `ScriptableObject` `GameConfigAsset`.
+
+The concrete `GameplayLoop` implementation handles Unity-specific lifecycle management while the `IGameplayLoop` and `IGameplay` interfaces define the contract for gameplay execution.
 
 Finally, the gameplay leverages object pools to minimize object instantiation during gameplay.
 
@@ -125,7 +191,11 @@ The UI and Gameplay layers are the only ones that interact with it directly thro
 
 #### Local Packages
 
-The project has an example `com.company.utilities` package that was created to illustrate how its setup works. Being just an example, it actually contains unrelated functionalities that could in practice be their own packages.
+The project has an example `com.company.utilities` package that was created to illustrate how its setup 
+    works. Being just an example, it actually contains unrelated functionalities that could in practice be 
+    their own packages.
+
+The package is broken into `Runtime` and `Unity` assemblies. The `Runtime` defines agnostic utilities and interfaces. The `Unity` assembly provides implementations for such interfaces and other Unity specific utilities.
 
 ## Appendix
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using Gameplay.Simulation.Runtime;
-using Company.Utilities.Unity;
+using Company.Utilities.Runtime.Unity;
 
 namespace Gameplay.UI.Runtime
 {

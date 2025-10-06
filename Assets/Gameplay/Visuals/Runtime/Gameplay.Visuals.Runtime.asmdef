@@ -1,13 +1,9 @@
 {
-    "name": "Gameplay.UI.Runtime",
-    "rootNamespace": "Gameplay.UI.Runtime",
+    "name": "Gameplay.Visuals.Runtime",
+    "rootNamespace": "Gameplay.Visuals.Runtime",
     "references": [
         "Gameplay.Simulation.Runtime",
-        "Gameplay.Presentation.Runtime",
-        "Company.Utilities.Runtime",
-        "Company.Utilities.Runtime.Unity",
-        "Unity.TextMeshPro",
-        "Unity.Addressables"
+        "Gameplay.Simulation.Runtime.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

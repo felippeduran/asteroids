@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Company.Utilities.Runtime;
-using Company.Utilities.Unity;
+using Company.Utilities.Runtime.Unity;
 using Metagame.Presentation.Runtime;
 
 namespace Metagame.UI.Runtime
